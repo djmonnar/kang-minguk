@@ -12,45 +12,17 @@ type NaverMapProps = {
 
 let scriptPromise: Promise<void> | null = null;
 
-function upgradeNaverAssetUrl(url: string) {
-  return url
-    .replace("http://nrbe.map.naver.net/styles/", "https://nrbe.pstatic.net/styles/")
-    .replace("http://nrb.map.naver.net/styles/", "https://map.pstatic.net/nrb/styles/")
-    .replace("http://static.naver.net/static/", "https://ssl.pstatic.net/static/");
-}
-
-function upgradeNaverMapAssets(root: ParentNode = document) {
-  root.querySelectorAll("img").forEach((image) => {
-    const nextSrc = upgradeNaverAssetUrl(image.src);
-    if (nextSrc !== image.src) {
-      image.setAttribute("src", nextSrc);
-      image.src = nextSrc;
-    }
-  });
-}
-
 function loadNaverMaps() {
-  if (typeof window === "undefined") {
-    return Promise.reject(new Error("Browser environment is required."));
-  }
-
-  if (window.naver?.maps) {
-    return Promise.resolve();
-  }
+  if (typeof window === "undefined") return Promise.resolve();
+  if (window.naver?.maps) return Promise.resolve();
 
   if (!scriptPromise) {
     scriptPromise = new Promise<void>((resolve, reject) => {
       const script = document.createElement("script");
       script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_MAP_CLIENT_ID}`;
       script.async = true;
-      script.onload = () => {
-        if (window.naver?.maps) {
-          resolve();
-        } else {
-          reject(new Error("Naver Maps SDK loaded without maps namespace."));
-        }
-      };
-      script.onerror = () => reject(new Error("Failed to load Naver Maps SDK."));
+      script.onload = () => (window.naver?.maps ? resolve() : reject());
+      script.onerror = () => reject();
       document.head.appendChild(script);
     });
   }
@@ -60,26 +32,7 @@ function loadNaverMaps() {
 
 function markerContent(activity: Activity, selected: boolean) {
   const bg = selected ? "#e61e2b" : "#004ea2";
-  return `
-    <button
-      type="button"
-      aria-label="${activity.district} ${activity.title}"
-      style="
-        width: 34px;
-        height: 34px;
-        border-radius: 9999px;
-        border: 4px solid white;
-        background: ${bg};
-        color: white;
-        font-weight: 800;
-        font-size: 12px;
-        box-shadow: 0 8px 22px rgba(0,27,68,.24);
-        cursor: pointer;
-      "
-    >
-      ${activity.category.slice(0, 1)}
-    </button>
-  `;
+  return `<button type="button" aria-label="${activity.district} ${activity.title}" style="width:34px;height:34px;border-radius:9999px;border:4px solid white;background:${bg};color:white;font-weight:800;font-size:12px;box-shadow:0 8px 22px rgba(0,27,68,.24);cursor:pointer;">${activity.category.slice(0, 1)}</button>`;
 }
 
 export function NaverMap({ activities, selectedActivity, onSelectActivity }: NaverMapProps) {
@@ -90,8 +43,6 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
 
   useEffect(() => {
     let cancelled = false;
-    let assetObserver: MutationObserver | null = null;
-    let assetUpgradeInterval: number | null = null;
 
     loadNaverMaps()
       .then(() => {
@@ -113,25 +64,6 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
 
         mapRef.current = map;
         setStatus("ready");
-        upgradeNaverMapAssets();
-        assetObserver = new MutationObserver(() => {
-          upgradeNaverMapAssets();
-        });
-        assetObserver.observe(document.body, {
-          childList: true,
-          subtree: true,
-          attributes: true,
-          attributeFilter: ["src"]
-        });
-        assetUpgradeInterval = window.setInterval(() => {
-          upgradeNaverMapAssets();
-        }, 250);
-        window.setTimeout(() => {
-          if (assetUpgradeInterval) {
-            window.clearInterval(assetUpgradeInterval);
-            assetUpgradeInterval = null;
-          }
-        }, 5000);
 
         window.setTimeout(() => {
           if (!cancelled) {
@@ -146,10 +78,6 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
 
     return () => {
       cancelled = true;
-      assetObserver?.disconnect();
-      if (assetUpgradeInterval) {
-        window.clearInterval(assetUpgradeInterval);
-      }
     };
   }, []);
 
