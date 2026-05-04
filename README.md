@@ -63,7 +63,9 @@ npm run dev
 1. 네이버 클라우드 플랫폼에서 Maps API 애플리케이션 생성
 2. Web 서비스 URL에 배포 도메인 등록: `https://djmonnar.github.io`
 3. Client ID를 환경 변수로 관리: `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID`
-4. `components/JinjuMapSection.tsx`의 mock map 영역을 `NaverMap` 컴포넌트로 교체
+4. `components/NaverMap.tsx`가 네이버 Maps JavaScript SDK를 불러오고 활동 마커를 표시
 5. 기존 `activities.json`의 `lat`, `lng` 좌표를 그대로 마커 데이터로 사용
 
 브라우저에서 쓰는 Maps JavaScript API의 Client ID는 공개될 수 있는 값입니다. 관리자 Secret Key는 프론트엔드 코드나 GitHub 저장소에 넣지 않아야 합니다.
+
+현재 기본 Client ID는 `lib/naverMap.ts`에 설정되어 있습니다. 운영 환경에서 별도 값을 쓰려면 빌드 시 `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID`를 지정하면 됩니다.
