@@ -79,7 +79,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-8 sm:py-4 lg:px-10">
         <Link
           href="/"
           onClick={(event) => handleHeaderNavigation(event, "/")}
@@ -89,8 +89,8 @@ export function SiteHeader() {
           <span className="relative hidden h-14 w-[260px] overflow-hidden sm:block">
             <Image src={imagePaths.brandLogoWide} alt="강한민국 대한민국 강민국" fill priority sizes="260px" className="object-contain" />
           </span>
-          <span className="relative h-12 w-[172px] overflow-hidden sm:hidden">
-            <Image src={imagePaths.brandLogoMobile} alt="강한민국 대한민국 강민국" fill priority sizes="172px" className="object-contain" />
+          <span className="relative h-12 w-[240px] max-w-[calc(100vw-104px)] overflow-hidden sm:hidden">
+            <Image src={imagePaths.brandLogoMobile} alt="강한민국 대한민국 강민국" fill priority sizes="240px" className="object-contain object-left" />
           </span>
         </Link>
 
