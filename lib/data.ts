@@ -1,6 +1,7 @@
 import activitiesData from "@/data/activities.json";
 import newsData from "@/data/news.json";
 import policiesData from "@/data/policies.json";
+import { withBasePath } from "@/lib/paths";
 
 export type ActivityCategory =
   | "현장방문"
@@ -42,9 +43,15 @@ export type NewsItem = {
   url: string;
 };
 
-export const activities = activitiesData as Activity[];
+export const activities = (activitiesData as Activity[]).map((activity) => ({
+  ...activity,
+  image: withBasePath(activity.image)
+}));
 export const policies = policiesData as Policy[];
-export const news = newsData as NewsItem[];
+export const news = (newsData as NewsItem[]).map((item) => ({
+  ...item,
+  thumbnail: withBasePath(item.thumbnail)
+}));
 
 export const districts = [
   "진성면",

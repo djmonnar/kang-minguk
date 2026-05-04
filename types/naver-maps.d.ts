@@ -6,6 +6,7 @@ declare global {
       maps: {
         Event: {
           addListener: (target: unknown, eventName: string, listener: () => void) => void;
+          trigger?: (target: unknown, eventName: string) => void;
         };
         LatLng: new (lat: number, lng: number) => unknown;
         Map: new (
@@ -14,6 +15,7 @@ declare global {
             center: unknown;
             zoom: number;
             minZoom?: number;
+            mapTypeId?: unknown;
             mapTypeControl?: boolean;
             scaleControl?: boolean;
             logoControl?: boolean;
@@ -39,6 +41,9 @@ declare global {
         Point: new (x: number, y: number) => unknown;
         Position?: {
           TOP_RIGHT?: unknown;
+        };
+        MapTypeId?: {
+          NORMAL?: unknown;
         };
       };
     };

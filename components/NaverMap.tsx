@@ -83,6 +83,7 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
           center: new naverMaps.LatLng(JINJU_CENTER.lat, JINJU_CENTER.lng),
           zoom: 11,
           minZoom: 9,
+          mapTypeId: naverMaps.MapTypeId?.NORMAL,
           mapTypeControl: false,
           scaleControl: true,
           logoControl: true,
@@ -93,6 +94,13 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
 
         mapRef.current = map;
         setStatus("ready");
+
+        window.setTimeout(() => {
+          if (!cancelled) {
+            naverMaps.Event.trigger?.(map, "resize");
+            map.setCenter(new naverMaps.LatLng(JINJU_CENTER.lat, JINJU_CENTER.lng));
+          }
+        }, 100);
       })
       .catch(() => {
         if (!cancelled) setStatus("error");
@@ -104,7 +112,7 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
   }, []);
 
   useEffect(() => {
-    if (!window.naver?.maps || !mapRef.current) return;
+    if (status !== "ready" || !window.naver?.maps || !mapRef.current) return;
 
     const naverMaps = window.naver.maps;
     markerRefs.current.forEach((marker) => marker.setMap(null));
@@ -124,7 +132,7 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
       naverMaps.Event.addListener(marker, "click", () => onSelectActivity(activity.id));
       markerRefs.current.push(marker);
     });
-  }, [activities, onSelectActivity, selectedActivity?.id]);
+  }, [activities, onSelectActivity, selectedActivity?.id, status]);
 
   useEffect(() => {
     if (!window.naver?.maps || !mapRef.current || !selectedActivity) return;

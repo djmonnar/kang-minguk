@@ -1,11 +1,13 @@
+import { withBasePath } from "@/lib/paths";
+
 export const imagePaths = {
-  hero: "/images/히어로.png",
-  heroCardNews: "/images/히어로카드뉴스.png",
-  marketGreeting: "/images/시장인사.png",
-  civil: "/images/민원.png",
-  jinju: "/images/진주.png",
-  rail: "/images/철도.png",
-  aerospace: "/images/항공.png",
-  assembly: "/images/국회.png",
-  field: "/images/현장.png"
+  hero: withBasePath("/images/hero.png"),
+  heroCardNews: withBasePath("/images/hero-card-news.png"),
+  marketGreeting: withBasePath("/images/market-greeting.png"),
+  civil: withBasePath("/images/civil-complaint.png"),
+  jinju: withBasePath("/images/jinju.png"),
+  rail: withBasePath("/images/rail.png"),
+  aerospace: withBasePath("/images/aerospace.png"),
+  assembly: withBasePath("/images/assembly.png"),
+  field: withBasePath("/images/field.png")
 } as const;
