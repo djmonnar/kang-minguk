@@ -1,28 +1,31 @@
+import Image from "next/image";
+import Link from "next/link";
 import { districts } from "@/lib/data";
+import { imagePaths } from "@/lib/images";
 import { SectionHeader } from "@/components/SectionHeader";
 
 const districtGroups = [
   {
     title: "도심 생활권",
+    description: "상권, 공동주택, 생활민원, 통학·보행 현안이 밀집된 중심 권역입니다.",
     items: ["중앙동", "상봉동", "상대동", "하대동", "상평동", "초장동"]
   },
   {
     title: "동부·북부 생활권",
+    description: "정주 여건, 교통 접근성, 농촌 생활기반 개선 과제를 함께 봅니다.",
     items: ["금산면", "집현면", "미천면", "대곡면"]
   },
   {
     title: "동부 5개면",
+    description: "면 단위 현장 방문과 주민 소통 일정을 촘촘하게 연결합니다.",
     items: ["진성면", "일반성면", "이반성면", "사봉면", "지수면"]
   }
 ];
 
-const committeeItems = [
-  "국무조정실·국무총리비서실",
-  "금융위원회·금융감독원",
-  "공정거래위원회",
-  "국민권익위원회",
-  "개인정보보호위원회",
-  "국가보훈부"
+const priorities = [
+  "현장 방문과 민원 접수 이력 관리",
+  "생활권별 교통·안전·정주 과제 정리",
+  "지도 기반 활동 기록과 처리 현황 연결"
 ];
 
 export function ConstituencySection() {
@@ -32,7 +35,7 @@ export function ConstituencySection() {
         <SectionHeader
           eyebrow="Jinju-eul Constituency"
           title="진주시을 지역구 안내"
-          description="진주시을 생활권과 국회 정무위원회 주요 소관 분야를 함께 정리했습니다."
+          description="진주시을 읍면동을 생활권별로 나누어 현장 소통과 지역 현안을 보기 쉽게 정리했습니다."
         />
 
         <div className="mt-10 grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
@@ -49,6 +52,7 @@ export function ConstituencySection() {
               {districtGroups.map((group) => (
                 <article key={group.title} className="rounded-2xl border border-slate-200 bg-white p-5">
                   <h4 className="text-base font-black text-navy-900">{group.title}</h4>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{group.description}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {group.items.map((item) => (
                       <span key={item} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
@@ -59,26 +63,42 @@ export function ConstituencySection() {
                 </article>
               ))}
             </div>
-
-            <p className="mt-6 text-xs leading-6 text-slate-500">
-              진주시을 읍면동을 생활권 단위로 묶어 현장 방문, 민원, 정책 과제를 빠르게 확인할 수 있도록 정리했습니다.
-            </p>
           </div>
 
-          <div className="rounded-[2rem] border border-slate-200 bg-navy-900 p-6 text-white shadow-civic sm:p-8">
-            <p className="text-sm font-black uppercase tracking-[0.28em] text-red-100">Standing Committee</p>
-            <h3 className="mt-3 text-3xl font-black">정무위원회 소관</h3>
-            <p className="mt-4 text-sm leading-7 text-white/72">
-              금융, 공정거래, 반부패, 보훈, 개인정보 등 시민 생활과 경제 전반에 닿아 있는 정부 기관을 다루는 상임위원회입니다.
-            </p>
-            <div className="mt-6 grid gap-2">
-              {committeeItems.map((item) => (
-                <div key={item} className="rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-bold text-white/88">
-                  {item}
+          <aside className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-civic">
+            <div className="relative min-h-[230px] bg-navy-900">
+              <Image
+                src={imagePaths.jinjuWide}
+                alt="진주성과 남강이 보이는 진주 전경"
+                fill
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="object-cover opacity-82"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy-900/82 via-navy-900/10 to-transparent" />
+              <div className="absolute bottom-5 left-5 right-5">
+                <div className="relative h-14 w-36 overflow-hidden rounded-md bg-white/94 p-2">
+                  <Image src={imagePaths.jinjuLogo} alt="참진주 로고" fill sizes="144px" className="object-contain" />
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
+            <div className="p-6 sm:p-8">
+              <p className="text-sm font-black uppercase tracking-[0.24em] text-civic-red">Local Brief</p>
+              <h3 className="mt-3 text-2xl font-black text-navy-900">지역 현안 소통 기준</h3>
+              <div className="mt-5 grid gap-3">
+                {priorities.map((item) => (
+                  <div key={item} className="rounded-2xl bg-navy-50 px-4 py-3 text-sm font-bold leading-6 text-navy-900">
+                    {item}
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/#jinju-map"
+                className="mt-6 inline-flex min-h-11 items-center rounded-full bg-navy-900 px-5 text-sm font-black text-white transition hover:bg-civic-red"
+              >
+                소통지도에서 보기 →
+              </Link>
+            </div>
+          </aside>
         </div>
       </div>
     </section>

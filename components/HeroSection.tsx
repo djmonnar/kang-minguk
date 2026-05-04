@@ -27,8 +27,8 @@ export function HeroSection() {
         sizes="100vw"
         className="object-contain object-top md:hidden"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/16 to-transparent md:bg-[linear-gradient(90deg,rgba(0,11,29,0.14)_0%,rgba(0,11,29,0.03)_46%,rgba(0,11,29,0.34)_100%)]" />
-      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-navy-900 via-navy-900/56 to-transparent md:from-white md:via-white/42" />
+      <div className="absolute inset-0 bg-gradient-to-t from-navy-900/32 via-transparent to-transparent md:bg-[linear-gradient(90deg,rgba(0,11,29,0.14)_0%,rgba(0,11,29,0.03)_46%,rgba(0,11,29,0.34)_100%)]" />
+      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-navy-900/58 via-navy-900/18 to-transparent md:h-64 md:from-white md:via-white/42" />
 
       <div className="relative z-10 mx-auto flex min-h-[720px] max-w-7xl items-end px-5 pb-8 pt-12 sm:px-8 md:min-h-[680px] lg:min-h-[800px] lg:px-10 lg:pb-36">
         <div className="max-w-2xl">
@@ -38,13 +38,22 @@ export function HeroSection() {
           <p className="mt-5 hidden max-w-2xl text-base leading-8 text-white/72 md:block lg:text-lg">
             진주의 현장, 민원, 정책, 예산 활동을 시민이 한눈에 볼 수 있도록 소통 중심의 의정활동 홈페이지로 구성했습니다.
           </p>
+        </div>
+      </div>
 
-          <div className="mt-10 hidden flex-wrap gap-3 md:flex">
-            <Link href="/#jinju-map" className="inline-flex min-h-12 items-center rounded-full bg-civic-red px-7 text-sm font-black text-white shadow-2xl transition hover:bg-red-700">
-              진주 소통지도 보기
+      <div className="absolute inset-x-5 bottom-5 z-20 md:hidden">
+        <div className="rounded-[1.75rem] border border-white/45 bg-white/92 p-5 text-navy-900 shadow-[0_18px_60px_rgba(0,27,68,0.28)] backdrop-blur-xl">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-civic-red">Jinju Communication</p>
+          <h2 className="mt-2 text-xl font-black">진주와 국회를 잇는 의정활동</h2>
+          <p className="mt-2 text-xs font-bold leading-5 text-slate-600">
+            현장 소통과 주요 활동을 지도에서 바로 확인하세요.
+          </p>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <Link href="/#jinju-map" className="flex min-h-11 items-center justify-center rounded-full bg-civic-red px-4 text-xs font-black text-white">
+              소통지도
             </Link>
-            <Link href="/activities" className="inline-flex min-h-12 items-center rounded-full border border-white/35 bg-white/10 px-7 text-sm font-black text-white backdrop-blur transition hover:bg-white/18">
-              의정활동 보기 →
+            <Link href="/activities" className="flex min-h-11 items-center justify-center rounded-full bg-navy-900 px-4 text-xs font-black text-white">
+              의정활동
             </Link>
           </div>
         </div>

@@ -1,0 +1,34 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /members/{userId} {
+      allow create, update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          "uid",
+          "name",
+          "phone",
+          "address",
+          "partyMember",
+          "email",
+          "providerEmail",
+          "provider",
+          "consent",
+          "createdAt",
+          "updatedAt"
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.phone is string
+        && request.resource.data.address is string
+        && request.resource.data.email is string
+        && request.resource.data.provider == "google"
+        && request.resource.data.partyMember in ["yes", "no", "prefer_not_to_say"]
+        && request.resource.data.consent.privacy == true
+        && request.resource.data.consent.politicalInfo == true;
+
+      allow read: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

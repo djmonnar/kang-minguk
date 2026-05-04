@@ -8,7 +8,8 @@ const footerLinks = [
   { label: "정책현황", href: "/policies" },
   { label: "의정활동", href: "/activities" },
   { label: "자료실", href: "/media" },
-  { label: "민원제안", href: "/participation" }
+  { label: "민원제안", href: "/participation" },
+  { label: "회원가입", href: "/signup" }
 ];
 
 export function Footer() {

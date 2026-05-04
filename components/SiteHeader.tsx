@@ -14,7 +14,8 @@ const navLinks = [
   { label: "정책", href: "/policies" },
   { label: "의정활동", href: "/activities" },
   { label: "자료실", href: "/media" },
-  { label: "민원제안", href: "/participation" }
+  { label: "민원제안", href: "/participation" },
+  { label: "회원가입", href: "/signup" }
 ];
 
 const menuGroups = [
@@ -32,7 +33,8 @@ const menuGroups = [
       { label: "진주 소통지도", href: "/#jinju-map" },
       { label: "의정활동", href: "/activities" },
       { label: "보도·사진자료", href: "/media" },
-      { label: "민원·제안하기", href: "/participation" }
+      { label: "민원·제안하기", href: "/participation" },
+      { label: "소통회원 가입", href: "/signup" }
     ]
   }
 ];
@@ -89,10 +91,10 @@ export function SiteHeader() {
             <Image src={imagePaths.jinjuLogo} alt="참진주 로고" fill sizes="96px" className="object-contain" />
           </div>
           <Link
-            href="/participation"
+            href="/signup"
             className="rounded-full bg-navy-900 px-5 py-2 text-sm font-black text-white transition hover:bg-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
           >
-            시민 제안하기
+            소통회원 가입
           </Link>
         </div>
 
