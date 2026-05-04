@@ -9,7 +9,7 @@ const steps = [
 
 export function CitizenParticipation() {
   return (
-    <section id="participation" className="bg-navy-900 px-5 py-20 text-white sm:px-8 lg:px-10">
+    <section id="participation" className="bg-[linear-gradient(135deg,#001b44,#004ea2_58%,#e61e2b)] px-5 py-20 text-white sm:px-8 lg:px-10">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
         <SectionHeader
           eyebrow="Citizen Participation"

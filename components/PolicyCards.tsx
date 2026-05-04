@@ -26,7 +26,7 @@ export function PolicyCards() {
               key={policy.id}
               className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-civic"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-md bg-navy-900 text-lg font-black text-white">
+              <div className="flex h-12 w-12 items-center justify-center rounded-md bg-civic-red text-lg font-black text-white">
                 {iconLabels[policy.icon] ?? "정"}
               </div>
               <h3 className="mt-5 text-xl font-bold text-navy-900">{policy.title}</h3>

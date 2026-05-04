@@ -6,7 +6,8 @@ const navItems = ["소통지도", "정책현황", "의정활동", "민원제안"
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-navy-900 text-white">
-      <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(8,31,61,0.96),rgba(24,59,107,0.88)_48%,rgba(238,242,247,0.12))]" />
+      <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(0,27,68,0.98),rgba(0,78,162,0.9)_48%,rgba(230,30,43,0.2))]" />
+      <div className="absolute left-0 top-0 h-1.5 w-full bg-civic-red" />
       <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white to-transparent" />
 
       <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col px-5 py-5 sm:px-8 lg:px-10">
@@ -41,7 +42,9 @@ export function HeroSection() {
             </p>
             <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
               진주의 현장에서 듣고,
-              <span className="block text-white">국회에서 답하다</span>
+              <span className="block text-white">
+                국회에서 <span className="text-red-200">답하다</span>
+              </span>
             </h1>
             <div className="mt-7 space-y-2">
               <p className="text-2xl font-bold sm:text-3xl">국회의원 강민국</p>
@@ -65,8 +68,8 @@ export function HeroSection() {
                   }
                   className={
                     index === 0
-                      ? "inline-flex min-h-12 items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-bold text-navy-900 shadow-lg transition hover:bg-navy-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-navy-900"
-                      : "inline-flex min-h-12 items-center justify-center rounded-md border border-white/24 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-navy-900"
+                      ? "inline-flex min-h-12 items-center justify-center rounded-md bg-civic-red px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-navy-900"
+                      : "inline-flex min-h-12 items-center justify-center rounded-md border border-white/28 bg-white/8 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/14 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-navy-900"
                   }
                 >
                   {label}
@@ -86,8 +89,8 @@ export function HeroSection() {
                 className="object-cover object-top"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-900/76 via-navy-900/8 to-transparent" />
-              <div className="absolute bottom-8 left-6 right-6 rounded-md border border-white/18 bg-navy-900/72 p-5 backdrop-blur">
-                <p className="text-sm font-semibold text-white/70">진주와 국회를 잇는 의정활동</p>
+              <div className="absolute bottom-8 left-6 right-6 rounded-md border border-white/18 bg-navy-900/78 p-5 backdrop-blur">
+                <p className="text-sm font-semibold text-red-100">진주와 국회를 잇는 의정활동</p>
                 <p className="mt-2 text-xl font-bold">국회의원 강민국</p>
               </div>
             </div>

@@ -19,6 +19,14 @@ npm run dev
 
 브라우저에서 `http://localhost:3000`으로 확인합니다.
 
+## GitHub Pages 배포
+
+`main` 브랜치에 푸시하면 GitHub Actions가 정적 사이트를 빌드해서 GitHub Pages에 배포합니다.
+
+- 배포 주소: `https://djmonnar.github.io/kang-minguk`
+- 로컬 빌드: `npm run build`
+- GitHub Pages 빌드는 `GITHUB_PAGES=true` 환경에서 `/kang-minguk` base path를 적용합니다.
+
 ## 주요 구조
 
 - `app/page.tsx`: 전체 페이지 조합
@@ -47,3 +55,15 @@ npm run dev
 ## 지도 교체 메모
 
 현재 지도는 `lat`, `lng`를 mock canvas 영역에 정규화해서 표시합니다. 실제 지도 API로 교체할 때는 `JinjuMapSection` 내부의 지도 배경과 `pinPosition` 렌더링 부분만 네이버지도 또는 카카오맵 컴포넌트로 대체하면 됩니다. 활동 데이터 구조는 그대로 유지할 수 있습니다.
+
+## 네이버 지도 API 적용 메모
+
+실제 지도는 네이버 클라우드 플랫폼에서 Maps JavaScript API를 발급받아 연결하면 됩니다.
+
+1. 네이버 클라우드 플랫폼에서 Maps API 애플리케이션 생성
+2. Web 서비스 URL에 배포 도메인 등록: `https://djmonnar.github.io`
+3. Client ID를 환경 변수로 관리: `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID`
+4. `components/JinjuMapSection.tsx`의 mock map 영역을 `NaverMap` 컴포넌트로 교체
+5. 기존 `activities.json`의 `lat`, `lng` 좌표를 그대로 마커 데이터로 사용
+
+브라우저에서 쓰는 Maps JavaScript API의 Client ID는 공개될 수 있는 값입니다. 관리자 Secret Key는 프론트엔드 코드나 GitHub 저장소에 넣지 않아야 합니다.

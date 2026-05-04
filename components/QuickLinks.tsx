@@ -29,12 +29,12 @@ export function QuickLinks() {
           <a
             key={link.title}
             href={link.href}
-            className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-navy-700 hover:shadow-civic focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+            className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-civic-red hover:shadow-civic focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
           >
             <span className="text-sm font-bold text-civic-red">바로가기</span>
             <h2 className="mt-3 text-xl font-bold text-navy-900">{link.title}</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">{link.description}</p>
-            <span className="mt-5 inline-flex text-sm font-bold text-navy-800 group-hover:text-civic-blue">
+            <span className="mt-5 inline-flex text-sm font-bold text-navy-800 group-hover:text-civic-red">
               자세히 보기
             </span>
           </a>

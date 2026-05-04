@@ -10,20 +10,20 @@ const config: Config = {
     extend: {
       colors: {
         navy: {
-          50: "#f4f7fb",
-          100: "#e8eef7",
-          700: "#183b6b",
-          800: "#102d53",
-          900: "#081f3d"
+          50: "#f3f7fc",
+          100: "#e6eef8",
+          700: "#004ea2",
+          800: "#003a7a",
+          900: "#001b44"
         },
         civic: {
-          red: "#b4232a",
-          blue: "#1f5ea8",
+          red: "#e61e2b",
+          blue: "#004ea2",
           gray: "#eef2f7"
         }
       },
       boxShadow: {
-        civic: "0 18px 55px rgba(8, 31, 61, 0.12)"
+        civic: "0 18px 55px rgba(0, 27, 68, 0.14)"
       }
     }
   },

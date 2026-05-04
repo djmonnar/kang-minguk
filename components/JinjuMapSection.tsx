@@ -16,8 +16,8 @@ const categoryStyles: Record<Activity["category"], string> = {
   현장방문: "bg-civic-blue text-white",
   민원: "bg-civic-red text-white",
   정책: "bg-navy-800 text-white",
-  예산: "bg-amber-500 text-navy-900",
-  입법: "bg-emerald-600 text-white",
+  예산: "bg-red-100 text-civic-red",
+  입법: "bg-blue-100 text-navy-800",
   일정: "bg-slate-700 text-white"
 };
 
@@ -114,8 +114,8 @@ export function JinjuMapSection() {
               onClick={() => updateFilter(item)}
               className={
                 filter === item
-                  ? "min-h-10 shrink-0 rounded-md bg-navy-900 px-4 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
-                  : "min-h-10 shrink-0 rounded-md border border-slate-300 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-navy-700 hover:text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+                  ? "min-h-10 shrink-0 rounded-md bg-civic-red px-4 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
+                  : "min-h-10 shrink-0 rounded-md border border-slate-300 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-civic-red hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
               }
               aria-pressed={filter === item}
             >
@@ -126,7 +126,7 @@ export function JinjuMapSection() {
 
         <div className="mt-7 grid gap-5 lg:grid-cols-[1.35fr_0.65fr]">
           <div className="relative min-h-[520px] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-civic">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(31,94,168,0.16),transparent_25%),radial-gradient(circle_at_76%_28%,rgba(180,35,42,0.12),transparent_24%),linear-gradient(135deg,#f8fafc,#e8eef7)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,78,162,0.16),transparent_25%),radial-gradient(circle_at_76%_28%,rgba(230,30,43,0.13),transparent_24%),linear-gradient(135deg,#f8fafc,#e6eef8)]" />
             <div className="absolute inset-5 rounded-[32px] border border-dashed border-navy-700/20" />
             <div className="absolute left-[8%] top-[12%] h-[72%] w-[82%] rounded-[45%_55%_48%_52%] border-2 border-navy-700/18 bg-white/58 shadow-inner" />
             <div className="absolute left-[17%] top-[20%] rounded-md bg-white/78 px-3 py-2 text-xs font-bold text-slate-600">
