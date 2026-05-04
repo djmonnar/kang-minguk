@@ -42,10 +42,10 @@ export function HeroSection() {
       </div>
 
       <div className="absolute inset-x-5 bottom-5 z-20 md:hidden">
-        <div className="rounded-[1.75rem] border border-white/45 bg-white/92 p-5 text-navy-900 shadow-[0_18px_60px_rgba(0,27,68,0.28)] backdrop-blur-xl">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-civic-red">Jinju Communication</p>
+        <div className="rounded-[1.75rem] border border-white/18 bg-[linear-gradient(135deg,rgba(0,27,68,0.96),rgba(0,78,162,0.92)_58%,rgba(230,30,43,0.88))] p-5 text-white shadow-[0_18px_60px_rgba(0,27,68,0.34)] backdrop-blur-xl">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-red-100">Jinju Communication</p>
           <h2 className="mt-2 text-xl font-black">진주와 국회를 잇는 의정활동</h2>
-          <p className="mt-2 text-xs font-bold leading-5 text-slate-600">
+          <p className="mt-2 text-xs font-bold leading-5 text-white/78">
             현장 소통과 주요 활동을 지도에서 바로 확인하세요.
           </p>
           <div className="mt-4 grid grid-cols-2 gap-2">

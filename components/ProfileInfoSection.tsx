@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { SectionHeader } from "@/components/SectionHeader";
+import { imagePaths } from "@/lib/images";
 
 const profileFacts = [
   { label: "이름", value: "강민국 / 姜旻局 / KANG MINKUK" },
@@ -57,20 +59,28 @@ export function ProfileInfoSection() {
           description="공개 프로필 기준의 약력, 학력, 주요 의정활동 주제를 홈페이지용으로 정리했습니다."
         />
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <p className="text-sm font-black uppercase tracking-[0.28em] text-civic-red">Basic Information</p>
-            <h3 className="mt-3 text-3xl font-black text-navy-900">강민국</h3>
-            <div className="mt-7 grid gap-3">
-              {profileFacts.map((item) => (
-                <div key={item.label} className="grid gap-2 rounded-2xl bg-navy-50 p-4 sm:grid-cols-[90px_1fr]">
-                  <span className="text-sm font-black text-civic-blue">{item.label}</span>
-                  <span className="text-sm font-bold leading-6 text-navy-900">{item.value}</span>
-                </div>
-              ))}
+        <div className="mt-10 grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="grid gap-5">
+            <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-civic">
+              <div className="relative mx-auto aspect-[4/5] max-w-[360px] bg-navy-50 lg:max-w-none">
+                <Image
+                  src={imagePaths.profileOfficial}
+                  alt="국회의원 강민국 공식 프로필 사진"
+                  fill
+                  sizes="(min-width: 1024px) 34vw, 86vw"
+                  className="object-cover object-top"
+                />
+              </div>
+              <div className="border-t border-slate-100 p-6 sm:p-8">
+                <p className="text-sm font-black uppercase tracking-[0.28em] text-civic-red">Official Profile</p>
+                <h3 className="mt-3 text-3xl font-black text-navy-900">국회의원 강민국</h3>
+                <p className="mt-3 text-sm font-bold leading-6 text-slate-600">
+                  진주의 현장 목소리를 국회 의정활동과 정책 과제로 연결합니다.
+                </p>
+              </div>
             </div>
 
-            <div className="mt-7 rounded-2xl border border-slate-200 p-5">
+            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <h4 className="text-base font-black text-navy-900">의원실 정보</h4>
               <div className="mt-4 grid gap-2">
                 {contactItems.map((item) => (
@@ -84,6 +94,19 @@ export function ProfileInfoSection() {
           </div>
 
           <div className="grid gap-5">
+            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+              <p className="text-sm font-black uppercase tracking-[0.28em] text-civic-red">Basic Information</p>
+              <h3 className="mt-3 text-3xl font-black text-navy-900">강민국</h3>
+              <div className="mt-7 grid gap-3">
+                {profileFacts.map((item) => (
+                  <div key={item.label} className="grid gap-2 rounded-2xl bg-navy-50 p-4 sm:grid-cols-[90px_1fr]">
+                    <span className="text-sm font-black text-civic-blue">{item.label}</span>
+                    <span className="text-sm font-bold leading-6 text-navy-900">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <p className="text-sm font-black uppercase tracking-[0.28em] text-civic-red">Education & Career</p>
               <div className="mt-6 grid gap-5 md:grid-cols-2">
