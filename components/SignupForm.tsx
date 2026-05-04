@@ -13,6 +13,22 @@ const partyOptions = [
   { label: "응답하지 않음", value: "prefer_not_to_say" }
 ];
 
+function getSignupErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message.includes("auth/configuration-not-found")) {
+    return "Firebase Authentication이 아직 활성화되지 않았습니다. Firebase Console에서 Authentication 시작 후 Google 로그인을 사용 설정해주세요.";
+  }
+
+  if (error instanceof Error && error.message.includes("auth/unauthorized-domain")) {
+    return "현재 도메인이 Firebase Authentication 승인 도메인에 등록되지 않았습니다.";
+  }
+
+  if (error instanceof Error && error.message.includes("permission-denied")) {
+    return "Firestore 규칙 또는 회원 저장 권한을 확인해주세요.";
+  }
+
+  return error instanceof Error ? error.message : "저장 중 오류가 발생했습니다.";
+}
+
 export function SignupForm() {
   const isConfigured = useMemo(() => hasFirebaseConfig(), []);
   const [state, setState] = useState<SubmitState>("idle");
@@ -79,7 +95,7 @@ export function SignupForm() {
       setMessage("신청 정보가 접수되었습니다.");
     } catch (error) {
       setState("error");
-      setMessage(error instanceof Error ? error.message : "저장 중 오류가 발생했습니다.");
+      setMessage(getSignupErrorMessage(error));
     }
   }
 
