@@ -1,0 +1,63 @@
+import Image from "next/image";
+import { activities } from "@/lib/data";
+import { SectionHeader } from "@/components/SectionHeader";
+
+export function LatestActivities() {
+  const latest = [...activities]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 4);
+
+  return (
+    <section id="activities" className="bg-slate-50 px-5 py-20 sm:px-8 lg:px-10">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <SectionHeader
+            eyebrow="Assembly Activities"
+            title="최근 의정활동"
+            description="진주 현장과 국회 활동을 날짜, 지역, 처리 상태 중심으로 정리합니다."
+          />
+          <a
+            href="#jinju-map"
+            className="inline-flex min-h-11 items-center justify-center rounded-md bg-navy-900 px-5 text-sm font-bold text-white transition hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2 md:w-auto"
+          >
+            지도에서 보기
+          </a>
+        </div>
+
+        <div className="mt-10 grid gap-5 lg:grid-cols-4">
+          {latest.map((activity) => (
+            <article key={activity.id} className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+              <div className="relative aspect-[16/10] bg-slate-100">
+                <Image
+                  src={activity.image}
+                  alt={`${activity.title} 활동 사진`}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, 90vw"
+                  className="object-cover"
+                />
+              </div>
+              <div className="p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="rounded-full bg-navy-50 px-3 py-1 text-xs font-bold text-navy-800">
+                    {activity.category}
+                  </span>
+                  <time className="text-xs font-semibold text-slate-500" dateTime={activity.date}>
+                    {activity.date}
+                  </time>
+                </div>
+                <h3 className="mt-4 min-h-14 text-lg font-bold leading-7 text-navy-900">
+                  {activity.title}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{activity.summary}</p>
+                <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm">
+                  <span className="font-bold text-slate-700">{activity.district}</span>
+                  <span className="font-bold text-civic-red">{activity.status}</span>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
