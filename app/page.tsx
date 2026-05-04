@@ -1,27 +1,25 @@
 import { CitizenParticipation } from "@/components/CitizenParticipation";
-import { ConstituencySection } from "@/components/ConstituencySection";
 import { Footer } from "@/components/Footer";
 import { HeroSection } from "@/components/HeroSection";
 import { JinjuMapSection } from "@/components/JinjuMapSection";
 import { LatestActivities } from "@/components/LatestActivities";
 import { MediaGallery } from "@/components/MediaGallery";
-import { PolicyCards } from "@/components/PolicyCards";
-import { ProfileInfoSection } from "@/components/ProfileInfoSection";
+import { MobileFloatingBar } from "@/components/MobileFloatingBar";
 import { QuickLinks } from "@/components/QuickLinks";
+import { TabbedInfoSection } from "@/components/TabbedInfoSection";
 
 export default function Home() {
   return (
-    <main>
+    <main className="pb-28 md:pb-0">
       <HeroSection />
       <QuickLinks />
-      <ProfileInfoSection />
-      <ConstituencySection />
+      <TabbedInfoSection />
       <JinjuMapSection />
-      <PolicyCards />
       <LatestActivities />
       <MediaGallery />
       <CitizenParticipation />
       <Footer />
+      <MobileFloatingBar />
     </main>
   );
 }

@@ -9,5 +9,8 @@ export const imagePaths = {
   rail: withBasePath("/images/rail.png"),
   aerospace: withBasePath("/images/aerospace.png"),
   assembly: withBasePath("/images/assembly.png"),
-  field: withBasePath("/images/field.png")
+  field: withBasePath("/images/field.png"),
+  heroAssembly: withBasePath("/images/hero-assembly.png"),
+  jinjuWide: withBasePath("/images/jinju-wide.png"),
+  profileOfficial: withBasePath("/images/profile-official.png")
 } as const;

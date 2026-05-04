@@ -2,9 +2,9 @@ import Image from "next/image";
 import { imagePaths } from "@/lib/images";
 
 const navItems = [
-  { label: "강민국", href: "#profile" },
+  { label: "강민국", href: "#info-tabs" },
   { label: "진주 소통지도", href: "#jinju-map" },
-  { label: "정책현황", href: "#policies" },
+  { label: "정책현황", href: "#info-tabs" },
   { label: "의정활동", href: "#activities" },
   { label: "민원제안", href: "#participation" }
 ];
@@ -57,44 +57,44 @@ export function HeroSection() {
         </div>
       </header>
 
-      <div className="relative min-h-[760px] overflow-hidden bg-navy-900 text-white lg:min-h-[820px]">
+      <div className="relative overflow-hidden bg-navy-900 text-white lg:min-h-[820px]">
         <Image
-          src={imagePaths.jinju}
-          alt="진주를 상징하는 배경 이미지"
+          src={imagePaths.heroAssembly}
+          alt="국회 회의장에서 의정활동 중인 강민국 의원"
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-50"
+          className="object-cover opacity-[0.62]"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_20%,rgba(0,78,162,0.68),transparent_32%),linear-gradient(100deg,rgba(0,11,29,0.96)_0%,rgba(0,27,68,0.84)_48%,rgba(0,0,0,0.55)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_20%,rgba(0,78,162,0.58),transparent_34%),linear-gradient(100deg,rgba(0,11,29,0.96)_0%,rgba(0,27,68,0.88)_48%,rgba(0,0,0,0.52)_100%)]" />
         <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/45 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-white to-transparent" />
 
-        <div className="relative z-10 mx-auto grid min-h-[760px] max-w-7xl grid-cols-1 items-center gap-8 px-5 pb-32 pt-12 sm:px-8 lg:min-h-[820px] lg:grid-cols-[0.9fr_1.1fr] lg:px-10 lg:pb-36 lg:pt-16">
-          <div id="profile" className="relative order-2 mx-auto w-full max-w-[520px] self-end lg:order-1 lg:mx-0">
-            <div className="absolute -left-10 bottom-8 h-64 w-64 rounded-full bg-civic-red/35 blur-3xl" />
-            <div className="absolute -right-8 top-12 h-52 w-52 rounded-full bg-civic-blue/40 blur-3xl" />
-            <div className="relative overflow-hidden rounded-[2.5rem] border border-white/15 bg-white/10 shadow-[0_38px_90px_rgba(0,0,0,0.38)] backdrop-blur-sm">
+        <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-9 px-5 pb-8 pt-12 sm:px-8 lg:min-h-[820px] lg:grid-cols-[0.9fr_1.1fr] lg:px-10 lg:pb-36 lg:pt-16">
+          <div id="profile" className="relative order-2 mx-auto w-full max-w-[320px] self-end lg:order-1 lg:mx-0 lg:max-w-[520px]">
+            <div className="absolute -left-10 bottom-8 hidden h-64 w-64 rounded-full bg-civic-red/35 blur-3xl lg:block" />
+            <div className="absolute -right-8 top-12 hidden h-52 w-52 rounded-full bg-civic-blue/40 blur-3xl lg:block" />
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/10 shadow-[0_28px_70px_rgba(0,0,0,0.34)] backdrop-blur-sm lg:rounded-[2.5rem]">
               <div className="relative aspect-[4/5]">
                 <Image
-                  src={imagePaths.hero}
-                  alt="국회의원 강민국 프로필 사진"
+                  src={imagePaths.profileOfficial}
+                  alt="국회의원 강민국 공식 프로필 사진"
                   fill
                   priority
                   sizes="(min-width: 1024px) 38vw, 90vw"
                   className="object-cover object-top"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/80 via-transparent to-transparent" />
+                <div className="absolute inset-0 hidden bg-gradient-to-t from-navy-900/80 via-transparent to-transparent lg:block" />
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+              <div className="relative bg-navy-900 p-5 sm:p-6 lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:bg-transparent lg:p-8">
                 <p className="text-sm font-bold text-red-100">진주와 국회를 잇는 사람</p>
-                <p className="mt-2 text-3xl font-black tracking-tight">강민국</p>
+                <p className="mt-2 text-2xl font-black lg:text-3xl">강민국</p>
               </div>
             </div>
           </div>
 
           <div className="order-1 max-w-3xl lg:order-2">
-            <div className="mb-9 flex items-center gap-3">
+            <div className="mb-9 hidden items-center gap-3 md:flex">
               {socialItems.map((item) => (
                 <span key={item} className="grid h-12 w-12 place-items-center rounded-full bg-white/16 text-[11px] font-black text-white ring-1 ring-white/20 backdrop-blur">
                   {item}
@@ -105,7 +105,7 @@ export function HeroSection() {
             <p className="mb-5 text-sm font-black uppercase tracking-[0.38em] text-red-100 sm:text-base">
               Jinju with Kang Minguk
             </p>
-            <h1 className="text-4xl font-black leading-[1.08] tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
+            <h1 className="text-3xl font-black leading-[1.12] text-white sm:text-5xl lg:text-7xl">
               진주의 오늘을 듣고,
               <span className="mt-3 block">대한민국의 내일을</span>
               <span className="mt-3 block text-red-100">만듭니다.</span>
@@ -128,7 +128,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 z-20 w-[calc(100%-40px)] max-w-7xl -translate-x-1/2 px-0 sm:w-[calc(100%-64px)] lg:w-[calc(100%-80px)]">
+        <div className="relative z-20 mx-auto w-[calc(100%-40px)] max-w-7xl pb-8 sm:w-[calc(100%-64px)] lg:absolute lg:bottom-8 lg:left-1/2 lg:w-[calc(100%-80px)] lg:-translate-x-1/2 lg:pb-0">
           <div className="grid overflow-hidden rounded-[2rem] border border-white/18 bg-white/88 shadow-[0_24px_80px_rgba(0,27,68,0.18)] backdrop-blur-xl md:grid-cols-3">
             {quickCards.map((card, index) => (
               <a
