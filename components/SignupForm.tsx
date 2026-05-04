@@ -2,6 +2,7 @@
 
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { signInWithPopup } from "firebase/auth";
+import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
 import { getFirebaseAuth, getFirebaseDb, googleProvider, hasFirebaseConfig } from "@/lib/firebase";
 
@@ -30,6 +31,7 @@ function getSignupErrorMessage(error: unknown) {
 }
 
 export function SignupForm() {
+  const router = useRouter();
   const isConfigured = useMemo(() => hasFirebaseConfig(), []);
   const [state, setState] = useState<SubmitState>("idle");
   const [message, setMessage] = useState("");
@@ -93,6 +95,7 @@ export function SignupForm() {
 
       setState("success");
       setMessage("신청 정보가 접수되었습니다.");
+      router.replace("/signup/welcome");
     } catch (error) {
       setState("error");
       setMessage(getSignupErrorMessage(error));
