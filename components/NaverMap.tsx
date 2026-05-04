@@ -139,7 +139,7 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
       <div className="absolute bottom-4 left-4 right-4 rounded-lg border border-slate-200 bg-white/90 p-4 backdrop-blur">
         <p className="text-sm font-bold text-navy-900">표시 중인 활동 {activities.length}건</p>
         <p className="mt-1 text-xs leading-5 text-slate-600">
-          네이버 지도 API와 mock JSON 좌표 데이터를 연결했습니다. 필터와 마커 선택은 기존 데이터 구조를 그대로 사용합니다.
+          진주의 현장, 민원, 정책, 예산 활동을 지역별로 확인할 수 있습니다.
         </p>
       </div>
     </div>

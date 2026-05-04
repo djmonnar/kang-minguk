@@ -13,13 +13,13 @@ export function Footer() {
             </p>
           </div>
           <div className="flex flex-wrap gap-4 text-sm font-semibold text-slate-600">
-            <a className="rounded-md focus:outline-none focus:ring-2 focus:ring-civic-blue" href="#profile">
+            <a className="rounded-md focus:outline-none focus:ring-2 focus:ring-civic-blue" href="#info-tabs">
               프로필
             </a>
             <a className="rounded-md focus:outline-none focus:ring-2 focus:ring-civic-blue" href="#jinju-map">
               소통지도
             </a>
-            <a className="rounded-md focus:outline-none focus:ring-2 focus:ring-civic-blue" href="#policies">
+            <a className="rounded-md focus:outline-none focus:ring-2 focus:ring-civic-blue" href="#info-tabs">
               정책현황
             </a>
             <a className="rounded-md focus:outline-none focus:ring-2 focus:ring-civic-blue" href="#activities">
@@ -31,7 +31,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 rounded-lg bg-slate-50 p-5 text-xs leading-6 text-slate-500">
-          본 홈페이지는 의정활동 소개와 지역 소통을 위한 웹사이트 MVP이며, 공개 자료 검증 후 세부 링크와 최신 활동 자료를 순차 반영합니다.
+          본 홈페이지는 의정활동 소개와 지역 소통을 위한 공식 안내 채널입니다.
         </div>
       </div>
     </footer>

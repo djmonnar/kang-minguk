@@ -47,12 +47,6 @@ const contactItems = [
   { label: "이메일", value: "strongwind01@naver.com" }
 ];
 
-const noteItems = [
-  "공식 블로그·인스타그램·유튜브 링크는 공식 계정 확인 후 연결",
-  "뉴스·보도자료 링크는 실제 기사 원문 확인 후 순차 반영",
-  "정책·활동 자료는 국회/의원실/언론 원문 기준으로 업데이트"
-];
-
 export function ProfileInfoSection() {
   return (
     <section id="profile-info" className="bg-slate-50 px-5 py-20 sm:px-8 lg:px-10">
@@ -131,16 +125,6 @@ export function ProfileInfoSection() {
           </div>
         </div>
 
-        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5">
-          <p className="text-sm font-black text-amber-900">추가 확인 후 연결할 자료</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {noteItems.map((item) => (
-              <span key={item} className="rounded-full bg-white px-3 py-1 text-xs font-bold text-amber-800 ring-1 ring-amber-200">
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
