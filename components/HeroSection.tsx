@@ -35,9 +35,6 @@ export function HeroSection() {
           <h1 className="sr-only">
             진주의 현장에서 듣고 국회에서 답하다. 국회의원 강민국입니다.
           </h1>
-          <p className="mt-5 hidden max-w-2xl text-base leading-8 text-white/72 md:block lg:text-lg">
-            진주의 현장, 민원, 정책, 예산 활동을 시민이 한눈에 볼 수 있도록 소통 중심의 의정활동 홈페이지로 구성했습니다.
-          </p>
         </div>
       </div>
 
