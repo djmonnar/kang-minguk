@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import { imagePaths } from "@/lib/images";
 
 const navLinks = [
@@ -55,18 +55,42 @@ export function SiteHeader() {
     setIsOpen(false);
   }
 
+  function handleHeaderNavigation(event: MouseEvent<HTMLAnchorElement>, href: string) {
+    const isHomePage = pathname === "/";
+
+    if (isHomePage && href === "/") {
+      event.preventDefault();
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      closeMenu();
+      return;
+    }
+
+    if (isHomePage && href === "/#jinju-map") {
+      event.preventDefault();
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#jinju-map`);
+      document.getElementById("jinju-map")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      closeMenu();
+      return;
+    }
+
+    closeMenu();
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-10">
-        <Link href="/" className="group flex min-w-0 items-center gap-3" aria-label="국회의원 강민국 홈페이지 처음으로">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-civic-blue text-base font-black text-white shadow-civic">
-            강
+        <Link
+          href="/"
+          onClick={(event) => handleHeaderNavigation(event, "/")}
+          className="group flex min-w-0 items-center"
+          aria-label="국회의원 강민국 홈페이지 처음으로"
+        >
+          <span className="relative hidden h-14 w-[260px] overflow-hidden sm:block">
+            <Image src={imagePaths.brandLogoWide} alt="강한민국 대한민국 강민국" fill priority sizes="260px" className="object-contain" />
           </span>
-          <span className="min-w-0">
-            <span className="block truncate text-lg font-black tracking-tight text-navy-900">국회의원 강민국</span>
-            <span className="block text-[10px] font-black tracking-[0.18em] text-civic-red sm:text-xs">
-              JINJU COMMUNICATION
-            </span>
+          <span className="relative h-12 w-[172px] overflow-hidden sm:hidden">
+            <Image src={imagePaths.brandLogoMobile} alt="강한민국 대한민국 강민국" fill priority sizes="172px" className="object-contain" />
           </span>
         </Link>
 
@@ -75,6 +99,7 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={(event) => handleHeaderNavigation(event, item.href)}
               className={
                 isActive(item.href)
                   ? "text-civic-red"
@@ -139,7 +164,7 @@ export function SiteHeader() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        onClick={closeMenu}
+                        onClick={(event) => handleHeaderNavigation(event, item.href)}
                         className="flex min-h-12 items-center justify-between rounded-xl bg-slate-50 px-4 text-sm font-black text-navy-900 transition hover:bg-navy-900 hover:text-white focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
                       >
                         {item.label}
@@ -161,7 +186,7 @@ export function SiteHeader() {
               </a>
               <Link
                 href="/#jinju-map"
-                onClick={closeMenu}
+                onClick={(event) => handleHeaderNavigation(event, "/#jinju-map")}
                 className="flex min-h-12 items-center justify-center rounded-full bg-civic-red px-4 text-sm font-black text-white focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
               >
                 소통지도

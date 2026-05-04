@@ -13,6 +13,8 @@ export const imagePaths = {
   heroAssembly: withBasePath("/images/hero-assembly.png"),
   heroTitleWide: withBasePath("/images/hero-title-wide.png"),
   heroTitleMobile: withBasePath("/images/hero-title-mobile.png"),
+  brandLogoWide: withBasePath("/images/brand-logo-wide.png"),
+  brandLogoMobile: withBasePath("/images/brand-logo-mobile.png"),
   jinjuLogo: withBasePath("/images/jinju-logo.png"),
   jinjuWide: withBasePath("/images/jinju-wide.png"),
   profileOfficial: withBasePath("/images/profile-official.png")
