@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { activities } from "@/lib/data";
 import { SectionHeader } from "@/components/SectionHeader";
 
@@ -16,12 +17,12 @@ export function LatestActivities() {
             title="최근 의정활동"
             description="진주 현장과 국회 활동을 날짜, 지역, 처리 상태 중심으로 정리합니다."
           />
-          <a
-            href="#jinju-map"
+          <Link
+            href="/#jinju-map"
             className="inline-flex min-h-11 items-center justify-center rounded-md bg-navy-900 px-5 text-sm font-bold text-white transition hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2 md:w-auto"
           >
             지도에서 보기
-          </a>
+          </Link>
         </div>
 
         <div className="mt-10 grid gap-5 lg:grid-cols-4">

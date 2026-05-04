@@ -61,7 +61,7 @@ export function ConstituencySection() {
             </div>
 
             <p className="mt-6 text-xs leading-6 text-slate-500">
-              지역구 표기는 공개 의정보고회 지역 구분과 기존 홈페이지 데이터 기준으로 구성했으며, 선거구 개편 또는 행정구역 변경 시 업데이트가 필요합니다.
+              진주시을 읍면동을 생활권 단위로 묶어 현장 방문, 민원, 정책 과제를 빠르게 확인할 수 있도록 정리했습니다.
             </p>
           </div>
 
@@ -78,14 +78,6 @@ export function ConstituencySection() {
                 </div>
               ))}
             </div>
-            <a
-              href="https://www.asiae.co.kr/article/2024012920211256901"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-6 inline-flex min-h-11 items-center rounded-full bg-white px-5 text-sm font-black text-navy-900 transition hover:bg-red-100"
-            >
-              관련 기사 보기 →
-            </a>
           </div>
         </div>
       </div>

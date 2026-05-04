@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 function copyCurrentUrl() {
   if (navigator.clipboard?.writeText) {
     return navigator.clipboard.writeText(window.location.href);
@@ -55,13 +57,13 @@ export function MobileFloatingBar() {
         >
           공유하기
         </button>
-        <a
-          href="#jinju-map"
+        <Link
+          href="/#jinju-map"
           className="flex min-h-12 items-center justify-center rounded-full bg-civic-red px-3 text-xs font-black text-white focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
           aria-label="진주 소통지도 보기"
         >
           소통지도
-        </a>
+        </Link>
       </div>
     </div>
   );

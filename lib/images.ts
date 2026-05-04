@@ -11,6 +11,9 @@ export const imagePaths = {
   assembly: withBasePath("/images/assembly.png"),
   field: withBasePath("/images/field.png"),
   heroAssembly: withBasePath("/images/hero-assembly.png"),
+  heroTitleWide: withBasePath("/images/hero-title-wide.png"),
+  heroTitleMobile: withBasePath("/images/hero-title-mobile.png"),
+  jinjuLogo: withBasePath("/images/jinju-logo.png"),
   jinjuWide: withBasePath("/images/jinju-wide.png"),
   profileOfficial: withBasePath("/images/profile-official.png")
 } as const;

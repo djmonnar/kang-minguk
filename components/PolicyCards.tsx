@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { policies } from "@/lib/data";
 import { SectionHeader } from "@/components/SectionHeader";
 
@@ -36,13 +37,13 @@ export function PolicyCards() {
                 <span className="text-xs font-bold text-slate-500">
                   관련 활동 {policy.relatedActivities.length}건
                 </span>
-                <a
-                  href="#activities"
+                <Link
+                  href="/activities"
                   className="rounded-md text-sm font-bold text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
                   aria-label={`${policy.title} 관련 활동 보기`}
                 >
                   활동 보기
-                </a>
+                </Link>
               </div>
             </article>
           ))}
