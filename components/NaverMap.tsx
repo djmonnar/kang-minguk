@@ -12,6 +12,23 @@ type NaverMapProps = {
 
 let scriptPromise: Promise<void> | null = null;
 
+function upgradeNaverAssetUrl(url: string) {
+  return url
+    .replace("http://nrbe.map.naver.net/styles/", "https://nrbe.pstatic.net/styles/")
+    .replace("http://nrb.map.naver.net/styles/", "https://map.pstatic.net/nrb/styles/")
+    .replace("http://static.naver.net/static/", "https://ssl.pstatic.net/static/");
+}
+
+function upgradeNaverMapAssets(root: ParentNode = document) {
+  root.querySelectorAll("img").forEach((image) => {
+    const nextSrc = upgradeNaverAssetUrl(image.src);
+    if (nextSrc !== image.src) {
+      image.setAttribute("src", nextSrc);
+      image.src = nextSrc;
+    }
+  });
+}
+
 function loadNaverMaps() {
   if (typeof window === "undefined") {
     return Promise.reject(new Error("Browser environment is required."));
@@ -73,6 +90,8 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
 
   useEffect(() => {
     let cancelled = false;
+    let assetObserver: MutationObserver | null = null;
+    let assetUpgradeInterval: number | null = null;
 
     loadNaverMaps()
       .then(() => {
@@ -94,6 +113,25 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
 
         mapRef.current = map;
         setStatus("ready");
+        upgradeNaverMapAssets();
+        assetObserver = new MutationObserver(() => {
+          upgradeNaverMapAssets();
+        });
+        assetObserver.observe(document.body, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ["src"]
+        });
+        assetUpgradeInterval = window.setInterval(() => {
+          upgradeNaverMapAssets();
+        }, 250);
+        window.setTimeout(() => {
+          if (assetUpgradeInterval) {
+            window.clearInterval(assetUpgradeInterval);
+            assetUpgradeInterval = null;
+          }
+        }, 5000);
 
         window.setTimeout(() => {
           if (!cancelled) {
@@ -108,6 +146,10 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
 
     return () => {
       cancelled = true;
+      assetObserver?.disconnect();
+      if (assetUpgradeInterval) {
+        window.clearInterval(assetUpgradeInterval);
+      }
     };
   }, []);
 
