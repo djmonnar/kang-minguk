@@ -18,15 +18,16 @@ export function Footer() {
       <div className="mx-auto max-w-7xl border-t border-slate-200 pt-8">
         <div className="flex flex-col gap-7 md:flex-row md:items-start md:justify-between">
           <div className="max-w-xl">
-            <div className="flex items-center gap-4">
-              <div className="grid h-11 w-11 place-items-center rounded-full bg-civic-blue text-base font-black text-white">
-                강
-              </div>
-              <div>
-                <p className="text-lg font-black text-navy-900">국회의원 강민국</p>
-                <p className="mt-1 text-sm font-bold text-slate-600">경남 진주시을 공식 의정활동 홈페이지</p>
-              </div>
+            <div className="relative h-14 w-[280px] max-w-full overflow-hidden">
+              <Image
+                src={imagePaths.brandLogoMobile}
+                alt="강한민국 대한민국 강민국"
+                fill
+                sizes="280px"
+                className="object-contain object-left"
+              />
             </div>
+            <p className="mt-3 text-sm font-bold text-slate-600">경남 진주시을 공식 의정활동 홈페이지</p>
             <p className="mt-4 text-xs leading-6 text-slate-500">
               본 홈페이지는 의정활동 소개와 지역 소통을 위한 공식 안내 채널입니다.
             </p>
