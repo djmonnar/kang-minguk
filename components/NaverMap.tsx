@@ -21,8 +21,8 @@ function loadNaverMaps() {
       const script = document.createElement("script");
       script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_MAP_CLIENT_ID}`;
       script.async = true;
-      script.onload = () => (window.naver?.maps ? resolve() : reject());
-      script.onerror = () => reject();
+      script.onload = () => (window.naver?.maps ? resolve() : reject(new Error("Naver Maps SDK namespace missing")));
+      script.onerror = () => reject(new Error("Naver Maps SDK failed to load"));
       document.head.appendChild(script);
     });
   }
@@ -65,14 +65,18 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
         mapRef.current = map;
         setStatus("ready");
 
-        window.setTimeout(() => {
-          if (!cancelled) {
-            naverMaps.Event.trigger?.(map, "resize");
-            map.setCenter(new naverMaps.LatLng(JINJU_CENTER.lat, JINJU_CENTER.lng));
-          }
-        }, 100);
+        const refreshMap = () => {
+          if (cancelled || !mapElementRef.current) return;
+          naverMaps.Event.trigger?.(map, "resize");
+          map.setCenter(new naverMaps.LatLng(JINJU_CENTER.lat, JINJU_CENTER.lng));
+        };
+
+        window.requestAnimationFrame(refreshMap);
+        window.setTimeout(refreshMap, 100);
+        window.setTimeout(refreshMap, 500);
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(error);
         if (!cancelled) setStatus("error");
       });
 
@@ -112,8 +116,8 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
   }, [selectedActivity]);
 
   return (
-    <div className="relative min-h-[520px] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-civic">
-      <div ref={mapElementRef} className="absolute inset-0" aria-label="네이버 지도 기반 진주 소통지도" />
+    <div className="relative h-[520px] min-h-[520px] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-civic">
+      <div ref={mapElementRef} className="h-full w-full" aria-label="네이버 지도 기반 진주 소통지도" />
 
       {status === "loading" ? (
         <div className="absolute inset-0 flex items-center justify-center bg-navy-50 text-sm font-bold text-navy-900">
