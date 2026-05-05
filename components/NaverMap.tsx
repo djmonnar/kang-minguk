@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { JINJU_CENTER, NAVER_MAP_CLIENT_ID } from "@/lib/naverMap";
 import type { Activity } from "@/lib/data";
 
@@ -135,7 +136,7 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
   }, [selectedActivity]);
 
   return (
-    <div className="relative h-[520px] min-h-[520px] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-civic">
+    <div className="relative h-[560px] min-h-[560px] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-civic md:h-[520px] md:min-h-[520px]">
       <div ref={mapElementRef} className="h-full w-full" aria-label="네이버 지도 기반 진주 소통지도" />
 
       {status === "loading" ? (
@@ -155,7 +156,49 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
         </div>
       ) : null}
 
-      <div className="absolute bottom-4 left-4 right-4 rounded-lg border border-slate-200 bg-white/90 p-4 backdrop-blur">
+      {selectedActivity ? (
+        <article className="absolute inset-x-3 bottom-3 rounded-2xl border border-white/80 bg-white/95 p-3 shadow-[0_18px_50px_rgba(0,27,68,.22)] backdrop-blur md:hidden">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <span className="rounded-full bg-civic-red px-3 py-1 text-xs font-extrabold text-white">
+              {selectedActivity.category}
+            </span>
+            <strong className="min-w-0 flex-1 truncate text-sm font-extrabold text-navy-900">
+              {selectedActivity.district}
+            </strong>
+            <span className="text-xs font-bold text-slate-400">{selectedActivity.date}</span>
+          </div>
+          <a
+            href={selectedActivity.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 grid grid-cols-[1fr_76px] gap-3 rounded-xl border border-red-100 bg-red-50/45 p-3 transition hover:border-civic-red focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
+            aria-label={`${selectedActivity.title} 상세 자료 보기`}
+          >
+            <div className="min-w-0">
+              <span className="inline-flex rounded-full bg-civic-red px-2.5 py-1 text-[11px] font-extrabold text-white">
+                자세히 보기
+              </span>
+              <h3 className="mt-2 overflow-hidden text-sm font-extrabold leading-5 text-navy-900 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
+                {selectedActivity.title}
+              </h3>
+              <p className="mt-1 overflow-hidden text-xs leading-5 text-slate-600 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
+                {selectedActivity.summary}
+              </p>
+            </div>
+            <div className="relative h-[86px] overflow-hidden rounded-lg bg-slate-100">
+              <Image
+                src={selectedActivity.image}
+                alt={`${selectedActivity.title} 활동 사진`}
+                fill
+                sizes="76px"
+                className="object-cover"
+              />
+            </div>
+          </a>
+        </article>
+      ) : null}
+
+      <div className="absolute bottom-4 left-4 right-4 hidden rounded-lg border border-slate-200 bg-white/90 p-4 backdrop-blur md:block">
         <p className="text-sm font-bold text-navy-900">표시 중인 활동 {activities.length}건</p>
         <p className="mt-1 text-xs leading-5 text-slate-600">
           진주의 현장, 민원, 정책, 예산 활동을 지역별로 확인할 수 있습니다.

@@ -121,7 +121,7 @@ export function JinjuMapSection() {
             onSelectActivity={handleSelectActivity}
           />
 
-          <aside className="lg:sticky lg:top-6 lg:self-start" aria-label="선택한 활동 상세">
+          <aside className="hidden lg:sticky lg:top-6 lg:block lg:self-start" aria-label="선택한 활동 상세">
             {selectedActivity ? <ActivityDetail activity={selectedActivity} /> : null}
             <div className="mt-4 rounded-lg border border-slate-200 bg-white p-5">
               <h3 className="text-base font-bold text-navy-900">진주시을 행정구역</h3>
