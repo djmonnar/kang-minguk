@@ -9,6 +9,8 @@ const footerLinks = [
   { label: "의정활동", href: "/activities" },
   { label: "자료실", href: "/media" },
   { label: "민원제안", href: "/participation" },
+  { label: "로그인", href: "/login" },
+  { label: "내 정보", href: "/account" },
   { label: "회원가입", href: "/signup" }
 ];
 

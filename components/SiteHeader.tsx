@@ -15,6 +15,7 @@ const navLinks = [
   { label: "의정활동", href: "/activities" },
   { label: "자료실", href: "/media" },
   { label: "민원제안", href: "/participation" },
+  { label: "로그인", href: "/login" },
   { label: "회원가입", href: "/signup" }
 ];
 
@@ -34,6 +35,8 @@ const menuGroups = [
       { label: "의정활동", href: "/activities" },
       { label: "보도·사진자료", href: "/media" },
       { label: "민원·제안하기", href: "/participation" },
+      { label: "로그인", href: "/login" },
+      { label: "내 정보 설정", href: "/account" },
       { label: "소통회원 가입", href: "/signup" }
     ]
   }
@@ -120,6 +123,12 @@ export function SiteHeader() {
             className="rounded-full bg-navy-900 px-5 py-2 text-sm font-black text-white transition hover:bg-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
           >
             소통회원 가입
+          </Link>
+          <Link
+            href="/account"
+            className="rounded-full border border-slate-200 px-5 py-2 text-sm font-black text-navy-900 transition hover:border-civic-red hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+          >
+            내 정보
           </Link>
         </div>
 
