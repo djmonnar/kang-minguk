@@ -49,6 +49,8 @@ function ActivityDetail({ activity }: { activity: Activity }) {
       <p className="mt-4 text-sm leading-6 text-slate-600">{activity.summary}</p>
       <a
         href={activity.sourceUrl}
+        target="_blank"
+        rel="noreferrer"
         className="mt-5 inline-flex min-h-10 items-center rounded-md border border-navy-800 px-4 text-sm font-bold text-navy-900 transition hover:bg-navy-900 hover:text-white focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
         aria-label={`${activity.title} 상세 자료 보기`}
       >

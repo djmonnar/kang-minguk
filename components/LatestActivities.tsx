@@ -54,6 +54,15 @@ export function LatestActivities() {
                   <span className="font-bold text-slate-700">{activity.district}</span>
                   <span className="font-bold text-civic-red">{activity.status}</span>
                 </div>
+                <a
+                  href={activity.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-flex rounded-md text-sm font-bold text-navy-900 transition hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+                  aria-label={`${activity.title} 자료 보기`}
+                >
+                  자료 보기
+                </a>
               </div>
             </article>
           ))}

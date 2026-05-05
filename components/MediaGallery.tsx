@@ -37,6 +37,8 @@ export function MediaGallery() {
                 <h3 className="mt-3 text-lg font-bold leading-7 text-navy-900">{item.title}</h3>
                 <a
                   href={item.url}
+                  target="_blank"
+                  rel="noreferrer"
                   className="mt-5 inline-flex rounded-md text-sm font-bold text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
                   aria-label={`${item.title} 보기`}
                 >
