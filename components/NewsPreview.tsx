@@ -4,17 +4,32 @@ import Link from "next/link";
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { getFirebaseDb } from "@/lib/firebase";
+import { news, type SourceType } from "@/lib/data";
+import { SourceBadge, getSourceActionLabel } from "@/components/SourceBadge";
 
 type NewsPost = {
   id: string;
   title: string;
   category: string;
   summary: string;
+  url?: string;
+  sourceName?: string;
+  sourceType?: SourceType;
   createdAt?: { seconds: number };
 };
 
 export function NewsPreview() {
   const [posts, setPosts] = useState<NewsPost[]>([]);
+  const fallbackPosts: NewsPost[] = news.slice(0, 3).map((item) => ({
+    id: item.id,
+    title: item.title,
+    category: item.category,
+    summary: getSourceActionLabel(item.sourceType),
+    url: item.url,
+    sourceName: item.sourceName,
+    sourceType: item.sourceType
+  }));
+  const displayPosts = posts.length ? posts : fallbackPosts;
 
   useEffect(() => {
     let mounted = true;
@@ -61,17 +76,26 @@ export function NewsPreview() {
         </div>
 
         <div className="mt-7 grid gap-4 md:grid-cols-3">
-          {posts.length ? posts.map((post) => (
+          {displayPosts.map((post) => (
             <article key={post.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <span className="rounded-full bg-navy-50 px-3 py-1 text-xs font-black text-civic-red">{post.category}</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-navy-50 px-3 py-1 text-xs font-black text-civic-red">{post.category}</span>
+                <SourceBadge sourceType={post.sourceType} sourceName={post.sourceName} />
+              </div>
               <h3 className="mt-4 line-clamp-2 text-lg font-black leading-7 text-navy-900">{post.title}</h3>
               <p className="mt-3 line-clamp-2 text-sm font-bold leading-6 text-slate-600">{post.summary}</p>
+              {post.url ? (
+                <a
+                  href={post.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-flex text-sm font-black text-navy-900 transition hover:text-civic-red"
+                >
+                  {getSourceActionLabel(post.sourceType)} →
+                </a>
+              ) : null}
             </article>
-          )) : (
-            <article className="rounded-2xl border border-slate-200 bg-navy-50 p-5 md:col-span-3">
-              <p className="text-sm font-black text-navy-900">등록된 공지사항과 소식이 이곳에 표시됩니다.</p>
-            </article>
-          )}
+          ))}
         </div>
       </div>
     </section>

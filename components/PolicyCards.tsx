@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { policies } from "@/lib/data";
 import { SectionHeader } from "@/components/SectionHeader";
+import { SourceBadge, getSourceActionLabel } from "@/components/SourceBadge";
 
 export function PolicyCards() {
   return (
@@ -29,20 +30,33 @@ export function PolicyCards() {
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-navy-900">{policy.title}</h3>
+                <SourceBadge sourceType={policy.sourceType} sourceName={policy.sourceName} />
+                <h3 className="mt-4 text-xl font-bold text-navy-900">{policy.title}</h3>
                 <p className="mt-2 text-sm font-bold text-civic-blue">{policy.subtitle}</p>
                 <p className="mt-4 text-sm leading-6 text-slate-600">{policy.description}</p>
                 <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
                   <span className="text-xs font-bold text-slate-500">
                     관련 활동 {policy.relatedActivities.length}건
                   </span>
-                  <Link
-                    href="/activities"
-                    className="rounded-md text-sm font-bold text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
-                    aria-label={`${policy.title} 관련 활동 보기`}
-                  >
-                    활동 보기
-                  </Link>
+                  {policy.sourceUrl?.startsWith("/") ? (
+                    <Link
+                      href={policy.sourceUrl}
+                      className="rounded-md text-sm font-bold text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+                      aria-label={`${policy.title} ${getSourceActionLabel(policy.sourceType)}`}
+                    >
+                      {getSourceActionLabel(policy.sourceType)}
+                    </Link>
+                  ) : policy.sourceUrl ? (
+                    <a
+                      href={policy.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-md text-sm font-bold text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+                      aria-label={`${policy.title} ${getSourceActionLabel(policy.sourceType)}`}
+                    >
+                      {getSourceActionLabel(policy.sourceType)}
+                    </a>
+                  ) : null}
                 </div>
               </div>
             </article>

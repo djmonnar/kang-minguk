@@ -10,6 +10,9 @@
     "lat": 35.204,
     "lng": 128.151,
     "sourceUrl": "https://www.newspim.com/news/view/20241028000040",
+    "sourceName": "뉴스핌",
+    "sourceType": "press",
+    "verifiedAt": "2026-05-05",
     "status": "확보"
   },
   {
@@ -23,6 +26,9 @@
     "lat": 35.184,
     "lng": 128.103,
     "sourceUrl": "https://www.newsis.com/view/NISX20250901_0003310976",
+    "sourceName": "뉴시스",
+    "sourceType": "press",
+    "verifiedAt": "2026-05-05",
     "status": "현장점검"
   },
   {
@@ -36,6 +42,9 @@
     "lat": 35.181,
     "lng": 128.112,
     "sourceUrl": "https://news.nate.com/view/20240604n34119",
+    "sourceName": "언론 보도",
+    "sourceType": "press",
+    "verifiedAt": "2026-05-05",
     "status": "대표발의"
   },
   {
@@ -49,6 +58,9 @@
     "lat": 35.192,
     "lng": 128.084,
     "sourceUrl": "https://www.pressian.com/pages/articles/2025120516474136590",
+    "sourceName": "프레시안",
+    "sourceType": "press",
+    "verifiedAt": "2026-05-05",
     "status": "반영"
   },
   {
@@ -62,6 +74,9 @@
     "lat": 35.193,
     "lng": 128.269,
     "sourceUrl": "https://news.nate.com/view/20230628n24597",
+    "sourceName": "언론 보도",
+    "sourceType": "press",
+    "verifiedAt": "2026-05-05",
     "status": "확보"
   },
   {
@@ -75,6 +90,9 @@
     "lat": 35.197,
     "lng": 128.075,
     "sourceUrl": "https://www.newsis.com/view/NISX20251221_0003449243",
+    "sourceName": "뉴시스",
+    "sourceType": "press",
+    "verifiedAt": "2026-05-05",
     "status": "건의"
   },
   {
@@ -88,6 +106,9 @@
     "lat": 35.196,
     "lng": 128.119,
     "sourceUrl": "https://www.pressian.com/pages/articles/2025100310484196965",
+    "sourceName": "프레시안",
+    "sourceType": "press",
+    "verifiedAt": "2026-05-05",
     "status": "완료"
   },
   {
@@ -101,6 +122,9 @@
     "lat": 35.189,
     "lng": 128.124,
     "sourceUrl": "https://www.newsjinju.kr/news/articleView.html?idxno=32596",
-    "status": "본회의통과"
+    "sourceName": "진주신문",
+    "sourceType": "press",
+    "verifiedAt": "2026-05-05",
+    "status": "본회의 통과"
   }
 ]

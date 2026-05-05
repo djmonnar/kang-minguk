@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { JINJU_CENTER, NAVER_MAP_CLIENT_ID } from "@/lib/naverMap";
+import { SourceBadge, getSourceActionLabel } from "@/components/SourceBadge";
 import type { Activity } from "@/lib/data";
 
 type NaverMapProps = {
@@ -167,6 +168,9 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
             </strong>
             <span className="text-xs font-bold text-slate-400">{selectedActivity.date}</span>
           </div>
+          <div className="mt-3 flex">
+            <SourceBadge sourceType={selectedActivity.sourceType} sourceName={selectedActivity.sourceName} />
+          </div>
           <a
             href={selectedActivity.sourceUrl}
             target="_blank"
@@ -176,7 +180,7 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
           >
             <div className="min-w-0">
               <span className="inline-flex rounded-full bg-civic-red px-2.5 py-1 text-[11px] font-extrabold text-white">
-                자세히 보기
+                {getSourceActionLabel(selectedActivity.sourceType)}
               </span>
               <h3 className="mt-2 overflow-hidden text-sm font-extrabold leading-5 text-navy-900 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
                 {selectedActivity.title}

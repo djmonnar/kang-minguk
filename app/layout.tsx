@@ -3,8 +3,8 @@ import { MobileFloatingBar } from "@/components/MobileFloatingBar";
 import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
 
-const basePath = process.env.GITHUB_PAGES === "true" ? "/kang-minguk" : "";
-const siteUrl = "https://djmonnar.github.io";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+const siteUrl = "https://xn--939anzp33a.com";
 const title = "국회의원 강민국 공식 의정활동 홈페이지";
 const description = "경남 진주시을 국회의원 강민국의 의정활동, 정책현황, 진주 소통지도";
 const withSitePath = (path: string) => `${basePath}${path}`;

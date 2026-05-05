@@ -11,6 +11,8 @@ export type ActivityCategory =
   | "입법"
   | "일정";
 
+export type SourceType = "official" | "press";
+
 export type Activity = {
   id: string;
   title: string;
@@ -22,6 +24,9 @@ export type Activity = {
   lat: number;
   lng: number;
   sourceUrl: string;
+  sourceName?: string;
+  sourceType?: SourceType;
+  verifiedAt?: string;
   status: string;
 };
 
@@ -32,6 +37,10 @@ export type Policy = {
   description: string;
   icon: string;
   image: string;
+  sourceUrl?: string;
+  sourceName?: string;
+  sourceType?: SourceType;
+  verifiedAt?: string;
   relatedActivities: string[];
 };
 
@@ -42,6 +51,9 @@ export type NewsItem = {
   category: string;
   thumbnail: string;
   url: string;
+  sourceName?: string;
+  sourceType?: SourceType;
+  verifiedAt?: string;
 };
 
 export const activities = (activitiesData as Activity[]).map((activity) => ({

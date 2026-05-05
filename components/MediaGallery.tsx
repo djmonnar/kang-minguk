@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { news } from "@/lib/data";
 import { SectionHeader } from "@/components/SectionHeader";
+import { SourceBadge, getSourceActionLabel } from "@/components/SourceBadge";
 
 export function MediaGallery() {
   return (
@@ -34,16 +35,21 @@ export function MediaGallery() {
                     {item.date}
                   </time>
                 </div>
+                <div className="mt-3 flex">
+                  <SourceBadge sourceType={item.sourceType} sourceName={item.sourceName} />
+                </div>
                 <h3 className="mt-3 text-lg font-bold leading-7 text-navy-900">{item.title}</h3>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-5 inline-flex rounded-md text-sm font-bold text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
-                  aria-label={`${item.title} 보기`}
-                >
-                  자료 보기
-                </a>
+                {item.url ? (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-5 inline-flex rounded-md text-sm font-bold text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+                    aria-label={`${item.title} ${getSourceActionLabel(item.sourceType)}`}
+                  >
+                    {getSourceActionLabel(item.sourceType)}
+                  </a>
+                ) : null}
               </div>
             </article>
           ))}

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { SectionHeader } from "@/components/SectionHeader";
+import { SourceBadge, getSourceActionLabel } from "@/components/SourceBadge";
 import { districts, policies } from "@/lib/data";
 import { imagePaths } from "@/lib/images";
 
@@ -188,17 +189,20 @@ function PolicyTab() {
             />
           </div>
           <div className="p-6">
-            <h3 className="text-xl font-black text-navy-900">{policy.title}</h3>
+            <SourceBadge sourceType={policy.sourceType} sourceName={policy.sourceName} />
+            <h3 className="mt-4 text-xl font-black text-navy-900">{policy.title}</h3>
             <p className="mt-2 text-sm font-extrabold text-civic-blue">{policy.subtitle}</p>
             <p className="mt-4 text-sm leading-6 text-slate-600">{policy.description}</p>
             <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
               <span className="text-xs font-bold text-slate-500">관련 활동 {policy.relatedActivities.length}건</span>
               <a
-                href="#activities"
+                href={policy.sourceUrl ?? "#activities"}
                 className="rounded-md text-sm font-black text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
-                aria-label={`${policy.title} 관련 활동 보기`}
+                target={policy.sourceUrl?.startsWith("http") ? "_blank" : undefined}
+                rel={policy.sourceUrl?.startsWith("http") ? "noreferrer" : undefined}
+                aria-label={`${policy.title} ${getSourceActionLabel(policy.sourceType)}`}
               >
-                활동 보기
+                {getSourceActionLabel(policy.sourceType)}
               </a>
             </div>
           </div>

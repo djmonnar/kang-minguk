@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import { NaverMap } from "@/components/NaverMap";
 import { SectionHeader } from "@/components/SectionHeader";
+import { SourceBadge, getSourceActionLabel } from "@/components/SourceBadge";
 import { activities, activityFilters, districts, type Activity } from "@/lib/data";
 
 const categoryStyles: Record<Activity["category"], string> = {
@@ -34,6 +35,7 @@ function ActivityDetail({ activity }: { activity: Activity }) {
         <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
           {activity.status}
         </span>
+        <SourceBadge sourceType={activity.sourceType} sourceName={activity.sourceName} />
       </div>
       <h3 className="mt-4 text-xl font-bold text-navy-900">{activity.title}</h3>
       <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
@@ -47,15 +49,17 @@ function ActivityDetail({ activity }: { activity: Activity }) {
         </div>
       </dl>
       <p className="mt-4 text-sm leading-6 text-slate-600">{activity.summary}</p>
-      <a
-        href={activity.sourceUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="mt-5 inline-flex min-h-10 items-center rounded-md border border-navy-800 px-4 text-sm font-bold text-navy-900 transition hover:bg-navy-900 hover:text-white focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
-        aria-label={`${activity.title} 상세 자료 보기`}
-      >
-        상세 자료 보기
-      </a>
+      {activity.sourceUrl ? (
+        <a
+          href={activity.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-5 inline-flex min-h-10 items-center rounded-md border border-navy-800 px-4 text-sm font-bold text-navy-900 transition hover:bg-navy-900 hover:text-white focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+          aria-label={`${activity.title} ${getSourceActionLabel(activity.sourceType)}`}
+        >
+          {getSourceActionLabel(activity.sourceType)}
+        </a>
+      ) : null}
     </article>
   );
 }
