@@ -1,17 +1,17 @@
-const isGitHubPages = process.env.GITHUB_PAGES === "true";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const nextConfig = {
   output: "export",
   env: {
-    NEXT_PUBLIC_BASE_PATH: isGitHubPages ? "/kang-minguk" : ""
+    NEXT_PUBLIC_BASE_PATH: basePath
   },
   images: {
     unoptimized: true
   },
-  ...(isGitHubPages
+  ...(basePath
     ? {
-        basePath: "/kang-minguk",
-        assetPrefix: "/kang-minguk"
+        basePath,
+        assetPrefix: basePath
       }
     : {})
 };
