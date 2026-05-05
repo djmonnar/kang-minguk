@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type MouseEvent } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { imagePaths } from "@/lib/images";
 
 const navLinks = [
@@ -37,7 +37,7 @@ const menuGroups = [
       { label: "민원·제안하기", href: "/participation" },
       { label: "로그인", href: "/login" },
       { label: "내 정보 설정", href: "/account" },
-      { label: "소통회원 가입", href: "/signup" }
+      { label: "회원가입", href: "/signup" }
     ]
   }
 ];
@@ -45,6 +45,17 @@ const menuGroups = [
 export function SiteHeader() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
 
   function isActive(href: string) {
     if (href === "/") {
@@ -97,7 +108,7 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-7 text-sm font-extrabold text-slate-700 xl:flex" aria-label="주요 메뉴">
+        <nav className="hidden items-center gap-4 whitespace-nowrap text-xs font-extrabold text-slate-700 xl:flex 2xl:gap-6 2xl:text-sm" aria-label="주요 메뉴">
           {navLinks.map((item) => (
             <Link
               key={item.href}
@@ -105,8 +116,8 @@ export function SiteHeader() {
               onClick={(event) => handleHeaderNavigation(event, item.href)}
               className={
                 isActive(item.href)
-                  ? "text-civic-red"
-                  : "transition hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+                  ? "whitespace-nowrap text-civic-red"
+                  : "whitespace-nowrap transition hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
               }
             >
               {item.label}
@@ -120,13 +131,13 @@ export function SiteHeader() {
           </div>
           <Link
             href="/signup"
-            className="rounded-full bg-navy-900 px-5 py-2 text-sm font-black text-white transition hover:bg-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+            className="whitespace-nowrap rounded-full bg-navy-900 px-4 py-2 text-sm font-black text-white transition hover:bg-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2 2xl:px-5"
           >
-            소통회원 가입
+            회원가입
           </Link>
           <Link
             href="/account"
-            className="rounded-full border border-slate-200 px-5 py-2 text-sm font-black text-navy-900 transition hover:border-civic-red hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+            className="whitespace-nowrap rounded-full border border-slate-200 px-4 py-2 text-sm font-black text-navy-900 transition hover:border-civic-red hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2 2xl:px-5"
           >
             내 정보
           </Link>
@@ -150,9 +161,9 @@ export function SiteHeader() {
 
       <div
         id="mobile-menu"
-        className={`xl:hidden ${isOpen ? "block" : "hidden"}`}
+        className={`xl:hidden ${isOpen ? "fixed inset-x-0 bottom-0 top-[73px] block overflow-y-auto overscroll-contain bg-white" : "hidden"}`}
       >
-        <div className="border-t border-slate-200 bg-white px-5 pb-6 pt-4 shadow-[0_20px_50px_rgba(0,27,68,0.12)] sm:px-8">
+        <div className="min-h-full border-t border-slate-200 bg-white px-5 pb-24 pt-4 shadow-[0_20px_50px_rgba(0,27,68,0.12)] sm:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="flex items-center justify-between gap-4 rounded-2xl bg-navy-50 p-4">
               <div>
