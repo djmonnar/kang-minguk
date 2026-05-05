@@ -14,9 +14,7 @@ const navLinks = [
   { label: "정책", href: "/policies" },
   { label: "의정활동", href: "/activities" },
   { label: "자료실", href: "/media" },
-  { label: "민원제안", href: "/participation" },
-  { label: "로그인", href: "/login" },
-  { label: "회원가입", href: "/signup" }
+  { label: "민원제안", href: "/participation" }
 ];
 
 const menuGroups = [
@@ -125,10 +123,16 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <div className="relative h-9 w-24 overflow-hidden rounded-md bg-white">
+        <div className="hidden items-center gap-2 md:flex">
+          <div className="relative h-8 w-20 overflow-hidden rounded-md bg-white opacity-80">
             <Image src={imagePaths.jinjuLogo} alt="참진주 로고" fill sizes="96px" className="object-contain" />
           </div>
+          <Link
+            href="/login"
+            className="whitespace-nowrap rounded-full border border-slate-200 px-4 py-2 text-sm font-black text-navy-900 transition hover:border-civic-red hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+          >
+            로그인
+          </Link>
           <Link
             href="/signup"
             className="whitespace-nowrap rounded-full bg-navy-900 px-4 py-2 text-sm font-black text-white transition hover:bg-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2 2xl:px-5"
