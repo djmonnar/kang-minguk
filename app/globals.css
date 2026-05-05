@@ -28,6 +28,14 @@ body {
     sans-serif;
 }
 
+body.mobile-menu-open {
+  overflow: hidden;
+}
+
+body.mobile-menu-open [aria-label="모바일 빠른 메뉴"] {
+  display: none;
+}
+
 a {
   color: inherit;
   text-decoration: none;

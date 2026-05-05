@@ -49,9 +49,11 @@ export function SiteHeader() {
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    document.body.classList.add("mobile-menu-open");
 
     return () => {
       document.body.style.overflow = previousOverflow;
+      document.body.classList.remove("mobile-menu-open");
     };
   }, [isOpen]);
 
@@ -165,7 +167,7 @@ export function SiteHeader() {
 
       <div
         id="mobile-menu"
-        className={`xl:hidden ${isOpen ? "fixed inset-x-0 bottom-0 top-[73px] block overflow-y-auto overscroll-contain bg-white" : "hidden"}`}
+        className={`xl:hidden ${isOpen ? "fixed inset-x-0 bottom-0 top-[73px] z-[80] block touch-pan-y overflow-y-auto overscroll-contain bg-white" : "hidden"}`}
       >
         <div className="min-h-full border-t border-slate-200 bg-white px-5 pb-24 pt-4 shadow-[0_20px_50px_rgba(0,27,68,0.12)] sm:px-8">
           <div className="mx-auto max-w-7xl">
