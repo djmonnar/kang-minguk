@@ -12,6 +12,15 @@ type NaverMapProps = {
 
 let scriptPromise: Promise<void> | null = null;
 
+const markerColors: Record<Activity["category"], string> = {
+  현장방문: "#004ea2",
+  민원: "#e61e2b",
+  정책: "#002b5c",
+  예산: "#b91c1c",
+  입법: "#1d4ed8",
+  일정: "#334155"
+};
+
 function loadNaverMaps() {
   if (typeof window === "undefined") return Promise.resolve();
   if (window.naver?.maps) return Promise.resolve();
@@ -31,8 +40,18 @@ function loadNaverMaps() {
 }
 
 function markerContent(activity: Activity, selected: boolean) {
-  const bg = selected ? "#e61e2b" : "#004ea2";
-  return `<button type="button" aria-label="${activity.district} ${activity.title}" style="width:34px;height:34px;border-radius:9999px;border:4px solid white;background:${bg};color:white;font-weight:800;font-size:12px;box-shadow:0 8px 22px rgba(0,27,68,.24);cursor:pointer;">${activity.category.slice(0, 1)}</button>`;
+  const bg = selected ? "#e61e2b" : markerColors[activity.category];
+  const shadow = selected
+    ? "0 14px 30px rgba(230,30,43,.36)"
+    : "0 10px 24px rgba(0,27,68,.24)";
+
+  return `
+    <button type="button" aria-label="${activity.district} ${activity.title}" style="position:relative;width:36px;height:46px;border:0;background:transparent;padding:0;cursor:pointer;">
+      <span style="position:absolute;left:4px;top:0;width:28px;height:28px;border-radius:50% 50% 50% 0;background:${bg};border:4px solid #fff;box-shadow:${shadow};transform:rotate(-45deg);">
+        <span style="position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:9999px;background:#fff;transform:translate(-50%,-50%);"></span>
+      </span>
+    </button>
+  `;
 }
 
 export function NaverMap({ activities, selectedActivity, onSelectActivity }: NaverMapProps) {
@@ -99,7 +118,7 @@ export function NaverMap({ activities, selectedActivity, onSelectActivity }: Nav
         title: activity.title,
         icon: {
           content: markerContent(activity, selectedActivity?.id === activity.id),
-          anchor: new naverMaps.Point(17, 17)
+          anchor: new naverMaps.Point(18, 34)
         }
       });
 
