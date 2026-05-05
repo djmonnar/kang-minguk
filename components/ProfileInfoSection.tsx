@@ -10,43 +10,45 @@ const profileFacts = [
   { label: "상임위", value: "국회 정무위원회 중심 의정활동" }
 ];
 
-const educationItems = [
-  "경남대학교 대학원 법학과 졸업, 법학박사"
-];
+const educationItems = ["경남대학교 대학원 법학과 졸업, 법학박사"];
 
 const careerItems = [
   "제21대 국회의원",
   "제22대 국회의원",
   "국회 정무위원회 간사 이력",
-  "국민의힘 원내대변인·원내부대표 이력",
-  "제10대·제11대 경상남도의회의원",
+  "국민의힘 원내대변인·수석대변인 이력",
+  "제10대·제11대 경상남도의회 의원",
   "경상남도의회 건설소방위원회 위원장 이력",
   "전 경상남도 정무보좌역"
-];
-
-const activityThemes = [
-  {
-    title: "금융·소비자 보호",
-    description: "금융위원회·금융감독원 현안을 중심으로 금융질서와 소비자 권익을 점검합니다."
-  },
-  {
-    title: "공정거래·플랫폼 공정",
-    description: "공정거래와 디지털 플랫폼 이용자 보호, 개인정보 관련 제도 개선 과제를 다룹니다."
-  },
-  {
-    title: "국정감사·민생 점검",
-    description: "상임위 질의와 국정감사를 통해 정부 정책과 민생 현안을 점검합니다."
-  },
-  {
-    title: "진주 지역 현안",
-    description: "교육, 교통, 상권, 생활안전, 산업 기반 등 진주시을 현장 과제를 관리합니다."
-  }
 ];
 
 const contactItems = [
   { label: "의원실", value: "의원회관 1007호" },
   { label: "전화", value: "02-784-0797" },
   { label: "이메일", value: "strongwind01@naver.com" }
+];
+
+const donationItems = [
+  { label: "후원회명", value: "국회의원강민국후원회" },
+  { label: "후원문의", value: "055-763-5999" },
+  { label: "온라인 후원", value: "정치후원금센터 give.go.kr" },
+  { label: "후원계좌", value: "농협 351-1126-2700-93" },
+  { label: "예금주", value: "국회의원강민국후원회" }
+];
+
+const donationLimits = [
+  "국회의원후원회 1인 연간 최대 500만원",
+  "전체 후원회 합산 1인 연간 최대 2,000만원",
+  "10만원 이하는 전액 세액공제",
+  "10만원 초과분은 15%, 3,000만원 초과분은 25% 세액공제"
+];
+
+const donationNotices = [
+  "개인만 후원 가능합니다.",
+  "법인·단체 후원은 불가합니다.",
+  "법인카드 결제는 불가합니다.",
+  "타인 명의 후원은 불가합니다.",
+  "세액공제는 본인 지출분만 가능합니다."
 ];
 
 export function ProfileInfoSection() {
@@ -56,7 +58,7 @@ export function ProfileInfoSection() {
         <SectionHeader
           eyebrow="Official Profile"
           title="강민국 의원 프로필"
-          description="경력, 학력, 의원실 정보와 주요 의정활동 분야를 정리했습니다."
+          description="경력, 학력, 의원실 정보와 후원회 안내를 정리했습니다."
         />
 
         <div className="mt-10 grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
@@ -133,16 +135,60 @@ export function ProfileInfoSection() {
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-slate-200 bg-navy-900 p-6 text-white shadow-civic sm:p-8">
-              <p className="text-sm font-black uppercase tracking-[0.28em] text-red-100">Activity Themes</p>
-              <h4 className="mt-3 text-2xl font-black">의정활동 핵심 주제</h4>
-              <div className="mt-6 grid gap-3 md:grid-cols-2">
-                {activityThemes.map((theme) => (
-                  <article key={theme.title} className="rounded-2xl border border-white/10 bg-white/10 p-5">
-                    <h5 className="text-base font-black text-white">{theme.title}</h5>
-                    <p className="mt-3 text-sm leading-6 text-white/72">{theme.description}</p>
-                  </article>
-                ))}
+            <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-civic">
+              <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
+                <div className="relative min-h-[520px] bg-navy-50 sm:min-h-[680px] lg:min-h-[760px]">
+                  <Image
+                    src={imagePaths.donationGuide}
+                    alt="강민국 의원 후원회 안내 포스터"
+                    fill
+                    sizes="(min-width: 1024px) 36vw, 92vw"
+                    className="object-contain"
+                  />
+                </div>
+                <div className="bg-navy-900 p-6 text-white sm:p-8">
+                  <p className="text-sm font-black uppercase tracking-[0.28em] text-red-100">Support Committee</p>
+                  <h4 className="mt-3 text-2xl font-black">강민국 의원 후원회 안내</h4>
+                  <p className="mt-3 text-sm font-bold leading-6 text-white/76">
+                    깨끗한 정치와 투명한 후원을 위한 후원회 정보를 확인하실 수 있습니다.
+                  </p>
+
+                  <div className="mt-6 grid gap-3">
+                    {donationItems.map((item) => (
+                      <div key={item.label} className="rounded-2xl border border-white/10 bg-white/10 p-4">
+                        <p className="text-xs font-black uppercase tracking-[0.18em] text-red-100">{item.label}</p>
+                        <p className="mt-2 text-base font-black text-white">{item.value}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 rounded-2xl border border-white/10 bg-white/10 p-5">
+                    <h5 className="text-base font-black text-white">후원 가능 금액 및 세액공제</h5>
+                    <ul className="mt-4 space-y-2 text-sm font-bold leading-6 text-white/78">
+                      {donationLimits.map((item) => (
+                        <li key={item}>· {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="mt-4 rounded-2xl border border-white/10 bg-white/10 p-5">
+                    <h5 className="text-base font-black text-white">확인사항</h5>
+                    <ul className="mt-4 space-y-2 text-sm font-bold leading-6 text-white/78">
+                      {donationNotices.map((item) => (
+                        <li key={item}>· {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <a
+                    href="https://www.give.go.kr"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-civic-red px-6 text-sm font-black text-white shadow-civic transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-navy-900"
+                  >
+                    정치후원금센터 바로가기
+                  </a>
+                </div>
               </div>
             </div>
           </div>
