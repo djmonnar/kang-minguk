@@ -5,6 +5,7 @@
     "subtitle": "공정한 금융질서와 실질적 소비자 권익",
     "description": "불완전판매, 금융 사각지대, 민생 금융 부담을 점검하고 제도 개선 과제를 발굴합니다.",
     "icon": "finance",
+    "image": "/images/policy-finance.png",
     "relatedActivities": ["act-005"]
   },
   {
@@ -13,6 +14,7 @@
     "subtitle": "디지털 시대의 안전한 이용환경",
     "description": "개인정보 보호와 플랫폼 시장의 공정 경쟁을 함께 다루는 정책 현안을 정리합니다.",
     "icon": "shield",
+    "image": "/images/policy-platform.png",
     "relatedActivities": ["act-005"]
   },
   {
@@ -21,6 +23,7 @@
     "subtitle": "투명한 시장과 이용자 안전",
     "description": "가상자산 시장의 정보 비대칭과 이용자 피해 방지를 위한 제도 기반을 점검합니다.",
     "icon": "asset",
+    "image": "/images/policy-crypto.png",
     "relatedActivities": ["act-005"]
   },
   {
@@ -29,6 +32,7 @@
     "subtitle": "진주의 미래 산업 기반",
     "description": "우주항공청, 지역 기업, 연구기관과 연계되는 산업 생태계 성장을 지원합니다.",
     "icon": "space",
+    "image": "/images/policy-space.png",
     "relatedActivities": ["act-003"]
   },
   {
@@ -37,6 +41,7 @@
     "subtitle": "더 빠르고 편리한 이동권",
     "description": "철도, 도로, 환승 체계 등 진주 동부권 교통 개선 과제를 지속적으로 관리합니다.",
     "icon": "rail",
+    "image": "/images/policy-transport.png",
     "relatedActivities": ["act-004"]
   },
   {
@@ -45,6 +50,7 @@
     "subtitle": "현장에서 듣고 행정과 연결",
     "description": "도로, 주거, 교육, 안전, 환경 등 주민 생활과 가까운 민원을 체계적으로 분류합니다.",
     "icon": "people",
+    "image": "/images/policy-civil.png",
     "relatedActivities": ["act-001", "act-002", "act-006", "act-008"]
   }
 ]

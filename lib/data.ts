@@ -31,6 +31,7 @@ export type Policy = {
   subtitle: string;
   description: string;
   icon: string;
+  image: string;
   relatedActivities: string[];
 };
 
@@ -47,7 +48,10 @@ export const activities = (activitiesData as Activity[]).map((activity) => ({
   ...activity,
   image: withBasePath(activity.image)
 }));
-export const policies = policiesData as Policy[];
+export const policies = (policiesData as Policy[]).map((policy) => ({
+  ...policy,
+  image: withBasePath(policy.image)
+}));
 export const news = (newsData as NewsItem[]).map((item) => ({
   ...item,
   thumbnail: withBasePath(item.thumbnail)
