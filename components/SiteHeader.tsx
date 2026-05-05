@@ -93,14 +93,6 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-[1000] border-b border-slate-200 bg-white/95 backdrop-blur-xl">
-      <input
-        id="mobile-menu-toggle"
-        type="checkbox"
-        className="peer sr-only"
-        checked={isOpen}
-        onChange={(event) => setIsOpen(event.target.checked)}
-        aria-hidden="true"
-      />
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-8 sm:py-4 lg:px-10">
         <Link
           href="/"
@@ -157,26 +149,25 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        <label
-          htmlFor="mobile-menu-toggle"
-          role="button"
-          tabIndex={0}
+        <button
+          type="button"
           className="relative z-[1002] grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-full border border-slate-200 bg-white text-navy-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2 xl:hidden"
-          aria-label="모바일 메뉴 열기"
+          aria-label={isOpen ? "모바일 메뉴 닫기" : "모바일 메뉴 열기"}
           aria-controls="mobile-menu"
           aria-expanded={isOpen}
+          onClick={() => setIsOpen((value) => !value)}
         >
           <span className="flex w-5 flex-col gap-1.5">
             <span className={`h-0.5 rounded-full bg-current transition ${isOpen ? "translate-y-2 rotate-45" : ""}`} />
             <span className={`h-0.5 rounded-full bg-current transition ${isOpen ? "opacity-0" : ""}`} />
             <span className={`h-0.5 rounded-full bg-current transition ${isOpen ? "-translate-y-2 -rotate-45" : ""}`} />
           </span>
-        </label>
+        </button>
       </div>
 
       <div
         id="mobile-menu"
-        className="invisible pointer-events-none fixed inset-x-0 bottom-0 top-[73px] z-[1001] -translate-y-2 touch-pan-y overflow-y-auto overscroll-contain bg-white opacity-0 transition peer-checked:visible peer-checked:pointer-events-auto peer-checked:translate-y-0 peer-checked:opacity-100 xl:hidden"
+        className={`${isOpen ? "block" : "hidden"} absolute left-0 right-0 top-full z-[1001] max-h-[calc(100vh-73px)] overflow-y-auto overscroll-contain bg-white xl:hidden`}
       >
         <div className="min-h-full border-t border-slate-200 bg-white px-5 pb-24 pt-4 shadow-[0_20px_50px_rgba(0,27,68,0.12)] sm:px-8">
           <div className="mx-auto max-w-7xl">
