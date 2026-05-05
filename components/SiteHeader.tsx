@@ -92,7 +92,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
+    <header className="sticky top-0 z-[1000] border-b border-slate-200 bg-white/95 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-8 sm:py-4 lg:px-10">
         <Link
           href="/"
@@ -151,7 +151,7 @@ export function SiteHeader() {
 
         <button
           type="button"
-          className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-navy-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2 xl:hidden"
+          className="relative z-[1002] grid h-11 w-11 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-navy-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2 xl:hidden"
           aria-label={isOpen ? "모바일 메뉴 닫기" : "모바일 메뉴 열기"}
           aria-controls="mobile-menu"
           aria-expanded={isOpen}
@@ -167,7 +167,9 @@ export function SiteHeader() {
 
       <div
         id="mobile-menu"
-        className={`xl:hidden ${isOpen ? "fixed inset-x-0 bottom-0 top-[73px] z-[80] block touch-pan-y overflow-y-auto overscroll-contain bg-white" : "hidden"}`}
+        className={`fixed inset-x-0 bottom-0 top-[73px] z-[1001] touch-pan-y overflow-y-auto overscroll-contain bg-white transition xl:hidden ${
+          isOpen ? "visible translate-y-0 opacity-100" : "invisible pointer-events-none -translate-y-2 opacity-0"
+        }`}
       >
         <div className="min-h-full border-t border-slate-200 bg-white px-5 pb-24 pt-4 shadow-[0_20px_50px_rgba(0,27,68,0.12)] sm:px-8">
           <div className="mx-auto max-w-7xl">
