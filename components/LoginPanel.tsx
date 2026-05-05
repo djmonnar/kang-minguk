@@ -28,7 +28,7 @@ export function LoginPanel() {
 
   async function handleLogin() {
     if (!isConfigured) {
-      setMessage("Firebase 설정 후 로그인할 수 있습니다.");
+      setMessage("로그인 설정을 확인한 뒤 다시 이용해주세요.");
       return;
     }
 
@@ -55,10 +55,10 @@ export function LoginPanel() {
           <p className="text-sm font-black uppercase tracking-[0.24em] text-red-100">Member Login</p>
           <h2 className="mt-3 text-3xl font-black leading-tight">소통회원 로그인</h2>
           <p className="mt-4 text-sm font-bold leading-7 text-white/74">
-            가입 시 사용한 Google 계정으로 로그인하면 비공개 민원·제안과 내 정보 설정을 이용할 수 있습니다.
+            가입 시 사용한 계정으로 로그인하면 비공개 민원·제안과 내 정보 설정을 이용할 수 있습니다.
           </p>
           <div className="mt-6 grid gap-3 text-sm font-bold leading-6 text-white/82">
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-4">비밀번호는 Google 계정에서 관리합니다.</div>
+            <div className="rounded-2xl border border-white/10 bg-white/10 p-4">간편 로그인으로 빠르게 이용할 수 있습니다.</div>
             <div className="rounded-2xl border border-white/10 bg-white/10 p-4">주소, 전화번호, 이메일은 내 정보 설정에서 수정할 수 있습니다.</div>
           </div>
         </div>
@@ -89,8 +89,8 @@ export function LoginPanel() {
             </div>
           ) : (
             <div>
-              <p className="text-sm font-black text-civic-red">Google Auth</p>
-              <h3 className="mt-2 text-2xl font-black text-navy-900">Google 계정으로 로그인하세요</h3>
+              <p className="text-sm font-black text-civic-red">Member Login</p>
+              <h3 className="mt-2 text-2xl font-black text-navy-900">회원 계정으로 로그인하세요</h3>
               <p className="mt-3 text-sm font-bold leading-6 text-slate-600">
                 아직 가입하지 않았다면 먼저 소통회원 가입을 완료해주세요.
               </p>
@@ -100,13 +100,13 @@ export function LoginPanel() {
                   onClick={handleLogin}
                   className="min-h-12 rounded-full bg-civic-red px-6 text-sm font-black text-white shadow-civic transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
                 >
-                  Google로 로그인
+                  로그인하기
                 </button>
                 <Link
                   href="/signup"
                   className="flex min-h-12 items-center justify-center rounded-full border border-slate-200 px-6 text-sm font-black text-navy-900 transition hover:border-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
                 >
-                  소통회원 가입
+                  회원가입
                 </Link>
               </div>
             </div>

@@ -57,15 +57,6 @@ const districtGroups = [
   }
 ];
 
-const policyIconLabels: Record<string, string> = {
-  finance: "금",
-  shield: "보",
-  asset: "자",
-  space: "항",
-  rail: "철",
-  people: "민"
-};
-
 function ProfileTab() {
   return (
     <div className="grid gap-5 lg:grid-cols-[0.86fr_1.14fr]">
@@ -197,10 +188,7 @@ function PolicyTab() {
             />
           </div>
           <div className="p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-civic-red text-lg font-black text-white">
-              {policyIconLabels[policy.icon] ?? "정"}
-            </div>
-            <h3 className="mt-5 text-xl font-black text-navy-900">{policy.title}</h3>
+            <h3 className="text-xl font-black text-navy-900">{policy.title}</h3>
             <p className="mt-2 text-sm font-extrabold text-civic-blue">{policy.subtitle}</p>
             <p className="mt-4 text-sm leading-6 text-slate-600">{policy.description}</p>
             <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
@@ -229,7 +217,7 @@ export function TabbedInfoSection() {
         <SectionHeader
           eyebrow="Official Briefing"
           title="프로필·지역구·정책 한눈에 보기"
-          description="긴 정보를 탭으로 정리해 모바일에서도 필요한 내용만 빠르게 확인할 수 있습니다."
+          description="강민국 의원의 주요 이력과 진주시을 현안, 정책 의제를 정리했습니다."
         />
 
         <div className="mt-8 overflow-x-auto pb-2" role="tablist" aria-label="정보 섹션 탭">

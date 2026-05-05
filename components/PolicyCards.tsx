@@ -3,15 +3,6 @@ import Image from "next/image";
 import { policies } from "@/lib/data";
 import { SectionHeader } from "@/components/SectionHeader";
 
-const iconLabels: Record<string, string> = {
-  finance: "금",
-  shield: "보",
-  asset: "자",
-  space: "우",
-  rail: "철",
-  people: "민"
-};
-
 export function PolicyCards() {
   return (
     <section id="policies" className="bg-white px-5 py-20 sm:px-8 lg:px-10">
@@ -38,10 +29,7 @@ export function PolicyCards() {
                 />
               </div>
               <div className="p-6">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-civic-red text-lg font-black text-white">
-                  {iconLabels[policy.icon] ?? "정"}
-                </div>
-                <h3 className="mt-5 text-xl font-bold text-navy-900">{policy.title}</h3>
+                <h3 className="text-xl font-bold text-navy-900">{policy.title}</h3>
                 <p className="mt-2 text-sm font-bold text-civic-blue">{policy.subtitle}</p>
                 <p className="mt-4 text-sm leading-6 text-slate-600">{policy.description}</p>
                 <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">

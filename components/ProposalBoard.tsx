@@ -105,10 +105,10 @@ export function ProposalBoard() {
         <p className="text-sm font-black uppercase tracking-[0.24em] text-red-100">Private Board</p>
         <h2 className="mt-3 text-3xl font-black">비공개 민원·제안 게시판</h2>
         <p className="mt-4 text-sm font-bold leading-7 text-white/74">
-          작성한 내용은 본인과 관리자만 확인할 수 있도록 Firestore 규칙을 분리했습니다.
+          작성한 내용은 본인과 담당 관리자만 확인할 수 있도록 비공개로 접수됩니다.
         </p>
         <div className="mt-6 grid gap-3 text-sm font-bold leading-6 text-white/82">
-          <div className="rounded-2xl border border-white/10 bg-white/10 p-4">소통회원 가입 후 작성할 수 있습니다.</div>
+          <div className="rounded-2xl border border-white/10 bg-white/10 p-4">회원가입 후 작성할 수 있습니다.</div>
           <div className="rounded-2xl border border-white/10 bg-white/10 p-4">게시글은 공개 목록에 노출되지 않습니다.</div>
           <div className="rounded-2xl border border-white/10 bg-white/10 p-4">관리자 계정만 전체 민원을 확인할 수 있습니다.</div>
         </div>
@@ -119,12 +119,12 @@ export function ProposalBoard() {
           disabled={loading}
           className="mt-7 min-h-12 w-full rounded-full bg-white px-5 text-sm font-black text-navy-900 transition hover:bg-red-100 disabled:bg-slate-300"
         >
-          Google로 회원 확인하기
+          회원 확인하기
         </button>
 
         {!isMember && uid ? (
           <Link href="/signup" className="mt-3 flex min-h-12 items-center justify-center rounded-full border border-white/20 px-5 text-sm font-black text-white">
-            소통회원 가입으로 이동
+            회원가입으로 이동
           </Link>
         ) : null}
       </section>

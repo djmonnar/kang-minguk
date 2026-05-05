@@ -51,7 +51,7 @@ export function AdminDashboard() {
 
       if (!adminDoc.exists()) {
         setIsAdmin(false);
-        setMessage("관리자 권한이 없는 계정입니다. Firestore admins 컬렉션에 UID를 등록해야 합니다.");
+        setMessage("관리자 권한이 등록되지 않은 계정입니다. 권한 설정을 확인해주세요.");
         return;
       }
 
@@ -110,7 +110,7 @@ export function AdminDashboard() {
           <p className="text-sm font-black uppercase tracking-[0.24em] text-red-100">Admin Console</p>
           <h2 className="mt-3 text-3xl font-black">관리자 게시판</h2>
           <p className="mt-4 text-sm font-bold leading-7 text-white/74">
-            관리자 UID가 Firestore `admins` 컬렉션에 등록된 계정만 민원 확인과 소식 작성을 할 수 있습니다.
+            관리자 권한이 등록된 계정만 민원 확인과 소식 작성을 할 수 있습니다.
           </p>
           <button
             type="button"
@@ -118,7 +118,7 @@ export function AdminDashboard() {
             disabled={loading}
             className="mt-7 min-h-12 w-full rounded-full bg-white px-5 text-sm font-black text-navy-900 transition hover:bg-red-100 disabled:bg-slate-300"
           >
-            Google로 관리자 확인
+            관리자 확인하기
           </button>
           {message ? <p className="mt-4 text-sm font-black text-red-100">{message}</p> : null}
         </aside>

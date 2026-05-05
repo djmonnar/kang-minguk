@@ -137,7 +137,7 @@ export function AccountSettings() {
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/10 p-4">
             <p className="text-sm font-black">비밀번호 변경</p>
             <p className="mt-2 text-xs font-bold leading-5 text-white/74">
-              현재는 Google 로그인 방식이므로 비밀번호는 Google 계정 보안 설정에서 변경합니다.
+              비밀번호는 가입 계정의 보안 설정에서 변경할 수 있습니다.
             </p>
             <a
               href="https://myaccount.google.com/security"
@@ -145,7 +145,7 @@ export function AccountSettings() {
               rel="noreferrer"
               className="mt-4 inline-flex text-sm font-black text-white underline underline-offset-4"
             >
-              Google 보안 설정 열기
+              보안 설정 열기
             </a>
           </div>
         </aside>
@@ -157,14 +157,14 @@ export function AccountSettings() {
             <div>
               <h3 className="text-2xl font-black text-navy-900">로그인이 필요합니다</h3>
               <p className="mt-3 text-sm font-bold leading-6 text-slate-600">
-                가입 시 사용한 Google 계정으로 로그인해주세요.
+                가입 시 사용한 계정으로 로그인해주세요.
               </p>
               <button
                 type="button"
                 onClick={handleLogin}
                 className="mt-6 min-h-12 rounded-full bg-civic-red px-6 text-sm font-black text-white shadow-civic transition hover:bg-red-700"
               >
-                Google로 로그인
+                로그인하기
               </button>
             </div>
           ) : !hasMember ? (

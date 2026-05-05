@@ -54,9 +54,9 @@ export function ProfileInfoSection() {
     <section id="profile-info" className="bg-slate-50 px-5 py-20 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
-          eyebrow="Profile Archive"
+          eyebrow="Official Profile"
           title="강민국 의원 프로필"
-          description="공개 프로필 기준의 약력, 학력, 주요 의정활동 주제를 홈페이지용으로 정리했습니다."
+          description="경력, 학력, 의원실 정보와 주요 의정활동 분야를 정리했습니다."
         />
 
         <div className="mt-10 grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">

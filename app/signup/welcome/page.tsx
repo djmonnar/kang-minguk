@@ -22,7 +22,7 @@ export default function SignupWelcomePage() {
                 <p className="text-sm font-black text-civic-red">01</p>
                 <h2 className="mt-2 text-lg font-black text-navy-900">정보 접수</h2>
                 <p className="mt-2 text-sm font-bold leading-6 text-slate-600">
-                  입력한 정보가 회원 DB에 저장되었습니다.
+                  입력한 정보가 접수되었습니다.
                 </p>
               </div>
               <div className="rounded-2xl bg-navy-50 p-5">

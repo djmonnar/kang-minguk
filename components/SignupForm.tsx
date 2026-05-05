@@ -16,15 +16,15 @@ const partyOptions = [
 
 function getSignupErrorMessage(error: unknown) {
   if (error instanceof Error && error.message.includes("auth/configuration-not-found")) {
-    return "Firebase Authentication이 아직 활성화되지 않았습니다. Firebase Console에서 Authentication 시작 후 Google 로그인을 사용 설정해주세요.";
+    return "회원가입 기능이 아직 준비되지 않았습니다. 관리자에게 문의해주세요.";
   }
 
   if (error instanceof Error && error.message.includes("auth/unauthorized-domain")) {
-    return "현재 도메인이 Firebase Authentication 승인 도메인에 등록되지 않았습니다.";
+    return "현재 접속 주소에서 로그인을 사용할 수 없습니다. 관리자에게 문의해주세요.";
   }
 
   if (error instanceof Error && error.message.includes("permission-denied")) {
-    return "Firestore 규칙 또는 회원 저장 권한을 확인해주세요.";
+    return "회원 정보 저장 권한을 확인해주세요.";
   }
 
   return error instanceof Error ? error.message : "저장 중 오류가 발생했습니다.";
@@ -54,7 +54,7 @@ export function SignupForm() {
 
     if (!isConfigured) {
       setState("error");
-      setMessage("Firebase 환경변수 설정 후 저장할 수 있습니다.");
+      setMessage("회원가입 설정을 확인한 뒤 다시 이용해주세요.");
       return;
     }
 
@@ -106,7 +106,7 @@ export function SignupForm() {
     <form onSubmit={handleSubmit} className="grid gap-5 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-civic sm:p-8">
       {!isConfigured ? (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold leading-6 text-amber-900">
-          Firebase 환경변수가 아직 설정되지 않았습니다. 설정 후 Google 로그인과 Firestore 저장이 활성화됩니다.
+          회원가입 기능을 준비 중입니다. 설정이 완료되면 신청할 수 있습니다.
         </div>
       ) : null}
 
@@ -208,7 +208,7 @@ export function SignupForm() {
         disabled={state === "loading"}
         className="min-h-13 rounded-full bg-civic-red px-6 py-4 text-sm font-black text-white shadow-civic transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-slate-400"
       >
-        {state === "loading" ? "Google 로그인 및 저장 중..." : "Google로 로그인하고 신청하기"}
+        {state === "loading" ? "신청 중..." : "로그인하고 신청하기"}
       </button>
 
       {message ? (
