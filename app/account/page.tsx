@@ -1,7 +1,6 @@
 import { AccountSettings } from "@/components/AccountSettings";
 import { Footer } from "@/components/Footer";
 import { PageHero } from "@/components/PageHero";
-import { imagePaths } from "@/lib/images";
 
 export default function AccountPage() {
   return (
@@ -10,8 +9,6 @@ export default function AccountPage() {
         eyebrow="My Page"
         title="내 정보 설정"
         description="소통회원 연락처, 주소, 이메일, 당원 여부 등 민원 안내에 필요한 정보를 관리합니다."
-        imageSrc={imagePaths.profileOfficial}
-        imageAlt="강민국 의원 공식 프로필 사진"
       />
       <AccountSettings />
       <Footer />

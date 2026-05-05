@@ -1,7 +1,6 @@
 import { Footer } from "@/components/Footer";
 import { PageHero } from "@/components/PageHero";
 import { SignupForm } from "@/components/SignupForm";
-import { imagePaths } from "@/lib/images";
 
 export default function SignupPage() {
   return (
@@ -10,8 +9,6 @@ export default function SignupPage() {
         eyebrow="Citizen Membership"
         title="소통회원 가입"
         description="Google 로그인 후 이름, 연락처, 주소, 당원 여부를 입력해 지역 소통 안내를 신청할 수 있습니다."
-        imageSrc={imagePaths.civil}
-        imageAlt="민원 소통 이미지"
       />
       <section className="bg-slate-50 px-5 py-20 sm:px-8 lg:px-10">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
