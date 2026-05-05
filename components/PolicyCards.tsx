@@ -18,7 +18,7 @@ export function PolicyCards() {
           {policies.map((policy) => (
             <article
               key={policy.id}
-              className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-civic"
+              className="group civic-card civic-card-hover overflow-hidden"
             >
               <div className="relative aspect-[4/3] bg-navy-50">
                 <Image
@@ -26,12 +26,13 @@ export function PolicyCards() {
                   alt={`${policy.title} 정책 이미지`}
                   fill
                   sizes="(min-width: 1280px) 31vw, (min-width: 768px) 45vw, 90vw"
-                  className="object-cover"
+                  className="object-cover transition duration-500 group-hover:scale-[1.03]"
                 />
+                <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white/90 to-transparent" />
               </div>
-              <div className="p-6">
+              <div className="p-6 pt-5">
                 <SourceBadge sourceType={policy.sourceType} sourceName={policy.sourceName} />
-                <h3 className="mt-4 text-xl font-bold text-navy-900">{policy.title}</h3>
+                <h3 className="mt-4 text-xl font-black leading-tight text-navy-900">{policy.title}</h3>
                 <p className="mt-2 text-sm font-bold text-civic-blue">{policy.subtitle}</p>
                 <p className="mt-4 text-sm leading-6 text-slate-600">{policy.description}</p>
                 <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
@@ -41,7 +42,7 @@ export function PolicyCards() {
                   {policy.sourceUrl?.startsWith("/") ? (
                     <Link
                       href={policy.sourceUrl}
-                      className="rounded-md text-sm font-bold text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+                      className="rounded-md text-sm font-black text-navy-900 transition hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
                       aria-label={`${policy.title} ${getSourceActionLabel(policy.sourceType)}`}
                     >
                       {getSourceActionLabel(policy.sourceType)}
@@ -51,7 +52,7 @@ export function PolicyCards() {
                       href={policy.sourceUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="rounded-md text-sm font-bold text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+                      className="rounded-md text-sm font-black text-navy-900 transition hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
                       aria-label={`${policy.title} ${getSourceActionLabel(policy.sourceType)}`}
                     >
                       {getSourceActionLabel(policy.sourceType)}

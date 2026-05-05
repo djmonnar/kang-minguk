@@ -8,6 +8,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          "Pretendard",
+          "Apple SD Gothic Neo",
+          "Malgun Gothic",
+          "Noto Sans KR",
+          "Arial",
+          "sans-serif"
+        ]
+      },
       colors: {
         navy: {
           50: "#f3f7fc",
@@ -23,7 +33,9 @@ const config: Config = {
         }
       },
       boxShadow: {
-        civic: "0 18px 55px rgba(0, 27, 68, 0.14)"
+        civic: "0 18px 55px rgba(0, 27, 68, 0.14)",
+        "civic-soft": "0 16px 46px rgba(0, 27, 68, 0.08)",
+        "civic-strong": "0 24px 72px rgba(0, 27, 68, 0.16)"
       }
     }
   },

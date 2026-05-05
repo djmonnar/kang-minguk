@@ -3,7 +3,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 
 export function CitizenParticipation() {
   return (
-    <section id="participation" className="bg-slate-50 px-5 py-20 sm:px-8 lg:px-10">
+    <section id="participation" className="bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] px-5 py-20 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Citizen Participation"

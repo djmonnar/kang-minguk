@@ -53,7 +53,7 @@ const donationNotices = [
 
 export function ProfileInfoSection() {
   return (
-    <section id="profile-info" className="bg-slate-50 px-5 py-20 sm:px-8 lg:px-10">
+    <section id="profile-info" className="bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] px-5 py-20 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Official Profile"
@@ -63,7 +63,7 @@ export function ProfileInfoSection() {
 
         <div className="mt-10 grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
           <div className="grid gap-5">
-            <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-civic">
+            <div className="civic-card overflow-hidden shadow-civic">
               <div className="relative mx-auto aspect-[4/5] max-w-[360px] bg-navy-50 lg:max-w-none">
                 <Image
                   src={imagePaths.profileOfficial}
@@ -82,7 +82,7 @@ export function ProfileInfoSection() {
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="civic-card p-6 sm:p-8">
               <h4 className="text-base font-black text-navy-900">의원실 정보</h4>
               <div className="mt-4 grid gap-2">
                 {contactItems.map((item) => (
@@ -96,7 +96,7 @@ export function ProfileInfoSection() {
           </div>
 
           <div className="grid gap-5">
-            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="civic-card p-6 sm:p-8">
               <p className="text-sm font-black uppercase tracking-[0.28em] text-civic-red">Basic Information</p>
               <h3 className="mt-3 text-3xl font-black text-navy-900">강민국</h3>
               <div className="mt-7 grid gap-3">
@@ -109,7 +109,7 @@ export function ProfileInfoSection() {
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="civic-card p-6 sm:p-8">
               <p className="text-sm font-black uppercase tracking-[0.28em] text-civic-red">Education & Career</p>
               <div className="mt-6 grid gap-5 md:grid-cols-2">
                 <article>
@@ -135,7 +135,7 @@ export function ProfileInfoSection() {
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-civic">
+            <div className="civic-card overflow-hidden shadow-civic">
               <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
                 <div className="relative min-h-[520px] bg-navy-50 sm:min-h-[680px] lg:min-h-[760px]">
                   <Image

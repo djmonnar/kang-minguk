@@ -126,9 +126,9 @@ export function AccountSettings() {
   }
 
   return (
-    <section className="bg-slate-50 px-5 py-20 sm:px-8 lg:px-10">
+    <section className="bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] px-5 py-20 sm:px-8 lg:px-10">
       <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.74fr_1.26fr] lg:items-start">
-        <aside className="rounded-[2rem] bg-navy-900 p-6 text-white shadow-civic sm:p-8">
+        <aside className="civic-dark-card bg-[linear-gradient(135deg,#001b44_0%,#003a7a_68%,#e61e2b_145%)] p-6 sm:p-8">
           <p className="text-sm font-black uppercase tracking-[0.24em] text-red-100">Account</p>
           <h2 className="mt-3 text-3xl font-black leading-tight">내 정보 설정</h2>
           <p className="mt-4 text-sm font-bold leading-7 text-white/74">
@@ -150,7 +150,7 @@ export function AccountSettings() {
           </div>
         </aside>
 
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-civic sm:p-8">
+        <div className="civic-card p-5 shadow-civic sm:p-8">
           {loading ? (
             <p className="text-sm font-black text-navy-900">회원 정보를 확인하는 중입니다.</p>
           ) : !user ? (
@@ -162,7 +162,7 @@ export function AccountSettings() {
               <button
                 type="button"
                 onClick={handleLogin}
-                className="mt-6 min-h-12 rounded-full bg-civic-red px-6 text-sm font-black text-white shadow-civic transition hover:bg-red-700"
+                className="civic-red-button mt-6 min-h-12 px-6"
               >
                 로그인하기
               </button>
@@ -175,7 +175,7 @@ export function AccountSettings() {
               </p>
               <Link
                 href="/signup"
-                className="mt-6 inline-flex min-h-12 items-center rounded-full bg-civic-red px-6 text-sm font-black text-white shadow-civic transition hover:bg-red-700"
+                className="civic-red-button mt-6 min-h-12 px-6"
               >
                 소통회원 가입하기
               </Link>
@@ -261,7 +261,7 @@ export function AccountSettings() {
               <button
                 type="submit"
                 disabled={state === "loading"}
-                className="min-h-13 rounded-full bg-civic-red px-6 py-4 text-sm font-black text-white shadow-civic transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+                className="civic-red-button min-h-13 px-6 py-4 disabled:cursor-not-allowed disabled:bg-slate-400"
               >
                 {state === "loading" ? "저장 중..." : "정보 수정하기"}
               </button>

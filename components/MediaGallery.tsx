@@ -17,7 +17,7 @@ export function MediaGallery() {
           {news.map((item) => (
             <article
               key={item.id}
-              className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"
+              className="group civic-card civic-card-hover overflow-hidden"
             >
               <div className="relative aspect-[16/9] bg-slate-100">
                 <Image
@@ -25,7 +25,7 @@ export function MediaGallery() {
                   alt={`${item.title} 썸네일`}
                   fill
                   sizes="(min-width: 1024px) 33vw, 90vw"
-                  className="object-cover"
+                  className="object-cover transition duration-500 group-hover:scale-[1.03]"
                 />
               </div>
               <div className="p-5">
@@ -38,7 +38,7 @@ export function MediaGallery() {
                 <div className="mt-3 flex">
                   <SourceBadge sourceType={item.sourceType} sourceName={item.sourceName} />
                 </div>
-                <h3 className="mt-3 text-lg font-bold leading-7 text-navy-900">{item.title}</h3>
+                <h3 className="mt-3 text-lg font-black leading-7 text-navy-900">{item.title}</h3>
                 {item.url ? (
                   <a
                     href={item.url}

@@ -20,7 +20,7 @@ export function LatestActivities() {
           />
           <Link
             href="/#jinju-map"
-            className="inline-flex min-h-11 items-center justify-center rounded-md bg-navy-900 px-5 text-sm font-bold text-white transition hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2 md:w-auto"
+            className="civic-navy-button md:w-auto"
           >
             지도에서 보기
           </Link>
@@ -28,14 +28,14 @@ export function LatestActivities() {
 
         <div className="mt-10 grid gap-5 lg:grid-cols-4">
           {latest.map((activity) => (
-            <article key={activity.id} className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+            <article key={activity.id} className="group civic-card civic-card-hover overflow-hidden">
               <div className="relative aspect-[16/10] bg-slate-100">
                 <Image
                   src={activity.image}
                   alt={`${activity.title} 활동 사진`}
                   fill
                   sizes="(min-width: 1024px) 25vw, 90vw"
-                  className="object-cover"
+                  className="object-cover transition duration-500 group-hover:scale-[1.03]"
                 />
               </div>
               <div className="p-5">
@@ -50,7 +50,7 @@ export function LatestActivities() {
                 <div className="mt-3 flex">
                   <SourceBadge sourceType={activity.sourceType} sourceName={activity.sourceName} />
                 </div>
-                <h3 className="mt-4 min-h-14 text-lg font-bold leading-7 text-navy-900">
+                <h3 className="mt-4 min-h-14 text-lg font-black leading-7 text-navy-900">
                   {activity.title}
                 </h3>
                 <p className="mt-3 text-sm leading-6 text-slate-600">{activity.summary}</p>

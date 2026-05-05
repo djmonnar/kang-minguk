@@ -8,7 +8,7 @@ export default function MediaPage() {
       <PageHero
         eyebrow="Media"
         title="보도·사진자료"
-        description="공식 발표, 현장 사진, 공지사항 성격의 자료를 분리해 확인할 수 있습니다."
+        description="공식 발표, 현장 사진, 공지사항 성격의 자료를 분류해 확인할 수 있습니다."
       />
       <MediaGallery />
       <Footer />

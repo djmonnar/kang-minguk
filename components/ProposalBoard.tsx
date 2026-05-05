@@ -101,7 +101,7 @@ export function ProposalBoard() {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-      <section className="rounded-[2rem] bg-navy-900 p-6 text-white shadow-civic sm:p-8">
+      <section className="civic-dark-card bg-[linear-gradient(135deg,#001b44_0%,#003a7a_68%,#e61e2b_145%)] p-6 sm:p-8">
         <p className="text-sm font-black uppercase tracking-[0.24em] text-red-100">Private Board</p>
         <h2 className="mt-3 text-3xl font-black">비공개 민원·제안 게시판</h2>
         <p className="mt-4 text-sm font-bold leading-7 text-white/74">
@@ -129,7 +129,7 @@ export function ProposalBoard() {
         ) : null}
       </section>
 
-      <section className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-civic sm:p-8">
+      <section className="civic-card p-5 shadow-civic sm:p-8">
         <form onSubmit={handleSubmit} className="grid gap-4">
           <label className="grid gap-2 text-sm font-black text-navy-900">
             제목

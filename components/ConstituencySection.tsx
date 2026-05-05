@@ -39,7 +39,7 @@ export function ConstituencySection() {
         />
 
         <div className="mt-10 grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="rounded-[2rem] border border-slate-200 bg-navy-50 p-6 shadow-sm sm:p-8">
+          <div className="civic-card bg-navy-50 p-6 sm:p-8">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-sm font-black uppercase tracking-[0.28em] text-civic-red">Constituency</p>
@@ -50,7 +50,7 @@ export function ConstituencySection() {
 
             <div className="mt-7 grid gap-4 md:grid-cols-3">
               {districtGroups.map((group) => (
-                <article key={group.title} className="rounded-2xl border border-slate-200 bg-white p-5">
+                <article key={group.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_10px_28px_rgba(0,27,68,0.06)]">
                   <h4 className="text-base font-black text-navy-900">{group.title}</h4>
                   <p className="mt-3 text-sm leading-6 text-slate-600">{group.description}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -65,7 +65,7 @@ export function ConstituencySection() {
             </div>
           </div>
 
-          <aside className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-civic">
+          <aside className="civic-card overflow-hidden shadow-civic">
             <div className="relative min-h-[230px] bg-navy-900">
               <Image
                 src={imagePaths.jinjuWide}
@@ -93,7 +93,7 @@ export function ConstituencySection() {
               </div>
               <Link
                 href="/#jinju-map"
-                className="mt-6 inline-flex min-h-11 items-center rounded-full bg-navy-900 px-5 text-sm font-black text-white transition hover:bg-civic-red"
+                className="civic-navy-button mt-6"
               >
                 소통지도에서 보기 →
               </Link>

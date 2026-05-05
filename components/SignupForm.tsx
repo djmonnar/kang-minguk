@@ -103,7 +103,7 @@ export function SignupForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-5 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-civic sm:p-8">
+    <form onSubmit={handleSubmit} className="civic-card grid gap-5 p-5 shadow-civic sm:p-8">
       {!isConfigured ? (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold leading-6 text-amber-900">
           회원가입 기능을 준비 중입니다. 설정이 완료되면 신청할 수 있습니다.
@@ -206,7 +206,7 @@ export function SignupForm() {
       <button
         type="submit"
         disabled={state === "loading"}
-        className="min-h-13 rounded-full bg-civic-red px-6 py-4 text-sm font-black text-white shadow-civic transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+        className="civic-red-button min-h-13 px-6 py-4 disabled:cursor-not-allowed disabled:bg-slate-400"
       >
         {state === "loading" ? "신청 중..." : "로그인하고 신청하기"}
       </button>

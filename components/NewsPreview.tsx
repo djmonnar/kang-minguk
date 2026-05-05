@@ -67,7 +67,7 @@ export function NewsPreview() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.2em] text-civic-red">Notice</p>
+            <p className="civic-eyebrow">Notice</p>
             <h2 className="mt-2 text-2xl font-black text-navy-900 sm:text-3xl">최근 소식</h2>
           </div>
           <Link href="/media" className="text-sm font-black text-navy-900 transition hover:text-civic-red">
@@ -77,7 +77,7 @@ export function NewsPreview() {
 
         <div className="mt-7 grid gap-4 md:grid-cols-3">
           {displayPosts.map((post) => (
-            <article key={post.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <article key={post.id} className="civic-card civic-card-hover p-5">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-navy-50 px-3 py-1 text-xs font-black text-civic-red">{post.category}</span>
                 <SourceBadge sourceType={post.sourceType} sourceName={post.sourceName} />

@@ -8,7 +8,7 @@ export default function AdminPage() {
       <PageHero
         eyebrow="Admin"
         title="관리자 게시판"
-        description="관리자 계정으로 로그인해 공지사항과 소식을 작성하고 비공개 민원·제안을 확인합니다."
+        description="관리자 계정으로 공지사항과 소식을 작성하고 비공개 민원·제안을 확인합니다."
       />
       <AdminDashboard />
       <Footer />

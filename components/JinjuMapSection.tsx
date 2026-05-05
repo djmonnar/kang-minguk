@@ -18,8 +18,8 @@ const categoryStyles: Record<Activity["category"], string> = {
 
 function ActivityDetail({ activity }: { activity: Activity }) {
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-civic">
-      <div className="relative mb-5 aspect-[16/10] overflow-hidden rounded-md bg-slate-100">
+    <article className="civic-card p-5 shadow-civic">
+      <div className="relative mb-5 aspect-[16/10] overflow-hidden rounded-2xl bg-slate-100">
         <Image
           src={activity.image}
           alt={`${activity.title} 활동 사진`}
@@ -37,7 +37,7 @@ function ActivityDetail({ activity }: { activity: Activity }) {
         </span>
         <SourceBadge sourceType={activity.sourceType} sourceName={activity.sourceName} />
       </div>
-      <h3 className="mt-4 text-xl font-bold text-navy-900">{activity.title}</h3>
+      <h3 className="mt-4 text-xl font-black leading-tight text-navy-900">{activity.title}</h3>
       <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
         <div>
           <dt className="font-bold text-slate-500">지역</dt>
@@ -54,7 +54,7 @@ function ActivityDetail({ activity }: { activity: Activity }) {
           href={activity.sourceUrl}
           target="_blank"
           rel="noreferrer"
-          className="mt-5 inline-flex min-h-10 items-center rounded-md border border-navy-800 px-4 text-sm font-bold text-navy-900 transition hover:bg-navy-900 hover:text-white focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+          className="civic-outline-button mt-5 min-h-10 px-4"
           aria-label={`${activity.title} ${getSourceActionLabel(activity.sourceType)}`}
         >
           {getSourceActionLabel(activity.sourceType)}
@@ -92,7 +92,7 @@ export function JinjuMapSection() {
   }
 
   return (
-    <section id="jinju-map" className="bg-navy-50 px-5 py-20 sm:px-8 lg:px-10">
+    <section id="jinju-map" className="bg-[linear-gradient(180deg,#f3f7fc_0%,#ffffff_100%)] px-5 py-20 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Jinju Communication Map"
@@ -108,8 +108,8 @@ export function JinjuMapSection() {
               onClick={() => updateFilter(item)}
               className={
                 filter === item
-                  ? "min-h-10 shrink-0 rounded-md bg-civic-red px-4 text-sm font-bold text-white focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
-                  : "min-h-10 shrink-0 rounded-md border border-slate-300 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-civic-red hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
+                  ? "min-h-10 shrink-0 rounded-full bg-civic-red px-4 text-sm font-black text-white shadow-[0_10px_24px_rgba(230,30,43,0.18)] focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
+                  : "min-h-10 shrink-0 rounded-full border border-slate-300 bg-white px-4 text-sm font-black text-slate-700 transition hover:border-civic-red hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
               }
               aria-pressed={filter === item}
             >
@@ -127,8 +127,8 @@ export function JinjuMapSection() {
 
           <aside className="hidden lg:sticky lg:top-6 lg:block lg:self-start" aria-label="선택한 활동 상세">
             {selectedActivity ? <ActivityDetail activity={selectedActivity} /> : null}
-            <div className="mt-4 rounded-lg border border-slate-200 bg-white p-5">
-              <h3 className="text-base font-bold text-navy-900">진주시을 행정구역</h3>
+            <div className="mt-4 civic-card p-5">
+              <h3 className="text-base font-black text-navy-900">진주시을 행정구역</h3>
               <p className="mt-3 text-sm leading-6 text-slate-600">{districts.join(", ")}</p>
             </div>
           </aside>

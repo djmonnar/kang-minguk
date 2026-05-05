@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,15 +23,21 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family:
-    Arial,
-    "Noto Sans KR",
+    "Pretendard",
     "Apple SD Gothic Neo",
     "Malgun Gothic",
+    "Noto Sans KR",
+    Arial,
     sans-serif;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 body.mobile-menu-open {
   overflow: hidden;
+  touch-action: none;
 }
 
 body.mobile-menu-open [aria-label="모바일 빠른 메뉴"] {
@@ -49,4 +57,58 @@ a {
 ::selection {
   background: #1f5ea8;
   color: #ffffff;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 3px solid rgba(0, 78, 162, 0.32);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .civic-card {
+    @apply rounded-[1.5rem] border border-slate-200/80 bg-white shadow-[0_16px_46px_rgba(0,27,68,0.08)] transition duration-300 ease-out;
+  }
+
+  .civic-card-hover {
+    @apply hover:-translate-y-1 hover:border-navy-100 hover:shadow-[0_22px_64px_rgba(0,27,68,0.14)];
+  }
+
+  .civic-dark-card {
+    @apply rounded-[1.75rem] border border-white/15 bg-navy-900 text-white shadow-[0_22px_70px_rgba(0,27,68,0.22)];
+  }
+
+  .civic-pill {
+    @apply inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-black transition duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2;
+  }
+
+  .civic-red-button {
+    @apply inline-flex min-h-11 items-center justify-center rounded-full bg-civic-red px-5 text-sm font-black text-white shadow-[0_12px_30px_rgba(230,30,43,0.22)] transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2;
+  }
+
+  .civic-navy-button {
+    @apply inline-flex min-h-11 items-center justify-center rounded-full bg-navy-900 px-5 text-sm font-black text-white shadow-[0_12px_30px_rgba(0,27,68,0.18)] transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2;
+  }
+
+  .civic-outline-button {
+    @apply inline-flex min-h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-black text-navy-900 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-civic-red hover:text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2;
+  }
+
+  .civic-eyebrow {
+    @apply text-xs font-black uppercase tracking-[0.22em] text-civic-red;
+  }
 }

@@ -20,12 +20,12 @@ export function Footer() {
       <div className="mx-auto max-w-7xl border-t border-slate-200 pt-8">
         <div className="flex flex-col gap-7 md:flex-row md:items-start md:justify-between">
           <div className="max-w-xl">
-            <div className="relative h-14 w-[280px] max-w-full overflow-hidden">
+            <div className="relative h-16 w-[360px] max-w-full overflow-hidden">
               <Image
-                src={imagePaths.brandLogoMobile}
+                src={imagePaths.brandLogoWide}
                 alt="강한민국 대한민국 강민국"
                 fill
-                sizes="280px"
+                sizes="360px"
                 className="object-contain object-left"
               />
             </div>
@@ -39,7 +39,7 @@ export function Footer() {
           </div>
 
           <div className="flex flex-col gap-5 md:items-end">
-            <div className="relative h-14 w-36 overflow-hidden rounded-md bg-white">
+            <div className="relative h-12 w-32 overflow-hidden rounded-md bg-white opacity-80">
               <Image src={imagePaths.jinjuLogo} alt="참진주 로고" fill sizes="144px" className="object-contain" />
             </div>
             <nav className="flex flex-wrap gap-4 text-sm font-bold text-slate-600 md:justify-end" aria-label="하단 메뉴">

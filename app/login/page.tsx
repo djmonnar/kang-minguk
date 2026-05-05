@@ -7,8 +7,8 @@ export default function LoginPage() {
     <main className="pb-28 md:pb-0">
       <PageHero
         eyebrow="Login"
-        title="소통회원 로그인"
-        description="가입 시 사용한 Google 계정으로 로그인하고 민원·제안과 내 정보 설정을 이용하세요."
+        title="회원 로그인"
+        description="가입 시 사용한 계정으로 로그인하고 민원·제안과 내 정보 설정을 이용하세요."
       />
       <LoginPanel />
       <Footer />

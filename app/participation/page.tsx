@@ -8,7 +8,7 @@ export default function ParticipationPage() {
       <PageHero
         eyebrow="Citizen Participation"
         title="민원·제안하기"
-        description="주민 의견을 공식적으로 접수하고 처리 현황 안내로 이어지는 참여 창구입니다."
+        description="주민 의견을 비공개로 접수하고, 필요한 안내로 이어지는 참여 창구입니다."
       />
       <CitizenParticipation />
       <Footer />
