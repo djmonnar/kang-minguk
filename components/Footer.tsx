@@ -39,9 +39,6 @@ export function Footer() {
           </div>
 
           <div className="flex flex-col gap-5 md:items-end">
-            <div className="relative h-12 w-32 overflow-hidden rounded-md bg-white opacity-80">
-              <Image src={imagePaths.jinjuLogo} alt="참진주 로고" fill sizes="144px" className="object-contain" />
-            </div>
             <nav className="flex flex-wrap gap-4 text-sm font-bold text-slate-600 md:justify-end" aria-label="하단 메뉴">
               {footerLinks.map((link) => (
                 <Link

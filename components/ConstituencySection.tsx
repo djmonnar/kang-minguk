@@ -75,11 +75,6 @@ export function ConstituencySection() {
                 className="object-cover opacity-82"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-900/82 via-navy-900/10 to-transparent" />
-              <div className="absolute bottom-5 left-5 right-5">
-                <div className="relative h-14 w-36 overflow-hidden rounded-md bg-white/94 p-2">
-                  <Image src={imagePaths.jinjuLogo} alt="참진주 로고" fill sizes="144px" className="object-contain" />
-                </div>
-              </div>
             </div>
             <div className="p-6 sm:p-8">
               <p className="text-sm font-black uppercase tracking-[0.24em] text-civic-red">Local Brief</p>

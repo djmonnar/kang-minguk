@@ -15,7 +15,6 @@ export const imagePaths = {
   heroTitleMobile: withBasePath("/images/hero-title-mobile.png"),
   brandLogoWide: withBasePath("/images/brand-logo-wide.png"),
   brandLogoMobile: withBasePath("/images/brand-logo-mobile.png"),
-  jinjuLogo: withBasePath("/images/jinju-logo.png"),
   jinjuWide: withBasePath("/images/jinju-wide.png"),
   profileOfficial: withBasePath("/images/profile-official.png"),
   donationGuide: withBasePath("/images/donation-guide.png")
