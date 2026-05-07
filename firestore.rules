@@ -12,7 +12,13 @@ service cloud.firestore {
 
     function isAdmin() {
       return signedIn()
-        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+        && (
+          exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+          || (
+            request.auth.token.email_verified == true
+            && request.auth.token.email in ["rso10041@gmail.com"]
+          )
+        );
     }
 
     match /admins/{userId} {
@@ -89,6 +95,26 @@ service cloud.firestore {
         && request.resource.data.summary is string
         && request.resource.data.content is string
         && request.resource.data.published is bool;
+    }
+
+    match /albumPosts/{postId} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly([
+          "title",
+          "caption",
+          "imageUrl",
+          "storagePath",
+          "published",
+          "createdAt",
+          "updatedAt"
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.caption is string
+        && request.resource.data.imageUrl is string
+        && request.resource.data.storagePath is string
+        && request.resource.data.published is bool;
+      allow delete: if isAdmin();
     }
   }
 }
