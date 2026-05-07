@@ -133,6 +133,7 @@ service cloud.firestore {
           "date",
           "summary",
           "image",
+          "storagePath",
           "lat",
           "lng",
           "sourceUrl",
@@ -149,6 +150,10 @@ service cloud.firestore {
         && request.resource.data.date.matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
         && request.resource.data.summary is string
         && request.resource.data.image is string
+        && (
+          !request.resource.data.keys().hasAny(["storagePath"])
+          || request.resource.data.storagePath is string
+        )
         && request.resource.data.lat is number
         && request.resource.data.lng is number
         && request.resource.data.sourceUrl is string

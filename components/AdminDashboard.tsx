@@ -82,6 +82,7 @@ type MapActivityItem = {
   date: string;
   summary: string;
   image?: string;
+  storagePath?: string;
   lat: number;
   lng: number;
   sourceUrl: string;
@@ -147,6 +148,7 @@ export function AdminDashboard() {
   const [mapActivities, setMapActivities] = useState<MapActivityItem[]>([]);
   const [albums, setAlbums] = useState<AlbumItem[]>([]);
   const [notices, setNotices] = useState<NoticeItem[]>([]);
+  const [mapFile, setMapFile] = useState<File | null>(null);
   const [albumFile, setAlbumFile] = useState<File | null>(null);
   const [mapForm, setMapForm] = useState({
     title: "",
@@ -202,10 +204,30 @@ export function AdminDashboard() {
   async function loadMapActivities() {
     const db = getFirebaseDb();
     const snapshot = await getDocs(query(collection(db, "mapActivities"), limit(100)));
-    const nextMapActivities = snapshot.docs.map((item) => ({
-      id: item.id,
-      ...(item.data() as Omit<MapActivityItem, "id">)
-    }));
+    const nextMapActivities = snapshot.docs.map((item) => {
+      const data = item.data() as Partial<MapActivityItem>;
+      const category = mapCategories.includes(data.category as ActivityCategory) ? data.category as ActivityCategory : mapCategories[0];
+      const district = data.district && districts.includes(data.district) ? data.district : districts[0];
+
+      return {
+        id: item.id,
+        title: data.title || "",
+        category,
+        district,
+        date: data.date || new Date().toISOString().slice(0, 10),
+        summary: data.summary || "",
+        image: data.image || "/images/field.png",
+        storagePath: data.storagePath || "",
+        lat: typeof data.lat === "number" ? data.lat : JINJU_CENTER.lat,
+        lng: typeof data.lng === "number" ? data.lng : JINJU_CENTER.lng,
+        sourceUrl: data.sourceUrl || "",
+        sourceName: data.sourceName || "관련 기사",
+        sourceType: (data.sourceType === "official" ? "official" : "press") as SourceType,
+        status: data.status || "등록",
+        published: data.published !== false,
+        createdAt: data.createdAt
+      };
+    });
 
     nextMapActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     setMapActivities(nextMapActivities);
@@ -316,6 +338,10 @@ export function AdminDashboard() {
     setMapForm((current) => ({ ...current, [name]: value }));
   }
 
+  function handleMapFileChange(event: ChangeEvent<HTMLInputElement>) {
+    setMapFile(event.target.files?.[0] ?? null);
+  }
+
   async function handleMapSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -328,6 +354,16 @@ export function AdminDashboard() {
       setLoading(true);
       setMessage("");
       const db = getFirebaseDb();
+      let image = "/images/field.png";
+      let storagePath = "";
+
+      if (mapFile) {
+        storagePath = `mapActivities/${safeFileName(mapFile.name)}`;
+        const storage = getFirebaseStorage();
+        const storageRef = ref(storage, storagePath);
+        await uploadBytes(storageRef, mapFile);
+        image = await getDownloadURL(storageRef);
+      }
 
       await addDoc(collection(db, "mapActivities"), {
         title: mapForm.title.trim(),
@@ -335,7 +371,8 @@ export function AdminDashboard() {
         district: mapForm.district,
         date: mapForm.date,
         summary: mapForm.summary.trim(),
-        image: "/images/field.png",
+        image,
+        storagePath,
         lat: Number(mapForm.lat),
         lng: Number(mapForm.lng),
         sourceUrl: mapForm.sourceUrl.trim(),
@@ -362,6 +399,7 @@ export function AdminDashboard() {
         lng: JINJU_CENTER.lng
       });
       setMessage("지도 핀이 등록되었습니다.");
+      setMapFile(null);
       await loadMapActivities();
     } catch (error) {
       setMessage(getAdminErrorMessage(error));
@@ -372,8 +410,8 @@ export function AdminDashboard() {
 
   async function handleMapActivityUpdate(
     item: MapActivityItem,
-    field: "title" | "category" | "district" | "date" | "summary" | "sourceUrl" | "sourceName" | "sourceType" | "status" | "published",
-    value: string | boolean
+    field: "title" | "category" | "district" | "date" | "summary" | "sourceUrl" | "sourceName" | "sourceType" | "status" | "published" | "lat" | "lng",
+    value: string | boolean | number
   ) {
     if (!isAdmin) {
       return;
@@ -400,6 +438,12 @@ export function AdminDashboard() {
     try {
       const db = getFirebaseDb();
       await deleteDoc(doc(db, "mapActivities", item.id));
+
+      if (item.storagePath) {
+        const storage = getFirebaseStorage();
+        await deleteObject(ref(storage, item.storagePath)).catch(() => undefined);
+      }
+
       await loadMapActivities();
       setMessage("지도 핀이 삭제되었습니다.");
     } catch (error) {
@@ -752,8 +796,8 @@ export function AdminDashboard() {
             ) : null}
 
             {isAdmin && activeTab === "map" ? (
-              <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-                <form onSubmit={handleMapSubmit} className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-civic">
+              <section className="grid gap-6 2xl:grid-cols-[minmax(0,680px)_minmax(0,1fr)]">
+                <form onSubmit={handleMapSubmit} className="grid min-w-0 gap-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-civic">
                   <div>
                     <p className="text-sm font-black text-civic-red">Map Pin</p>
                     <h3 className="mt-2 text-2xl font-black text-navy-900">지도 핀 등록</h3>
@@ -771,7 +815,13 @@ export function AdminDashboard() {
                     }}
                   />
 
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <label className="grid gap-2 text-sm font-black text-navy-900">
+                    사진
+                    <input type="file" accept="image/*" onChange={handleMapFileChange} className="min-h-12 rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold" />
+                    <span className="text-xs font-bold leading-5 text-slate-500">선택하지 않으면 기본 현장 사진으로 등록됩니다.</span>
+                  </label>
+
+                  <div className="grid gap-4">
                     <label className="grid gap-2 text-sm font-black text-navy-900">
                       위도
                       <input
@@ -806,7 +856,7 @@ export function AdminDashboard() {
                     />
                   </label>
 
-                  <div className="grid gap-4 md:grid-cols-3">
+                  <div className="grid gap-4">
                     <label className="grid gap-2 text-sm font-black text-navy-900">
                       태그
                       <select
@@ -854,7 +904,7 @@ export function AdminDashboard() {
                     />
                   </label>
 
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-4">
                     <label className="grid gap-2 text-sm font-black text-navy-900">
                       관련 기사 링크
                       <input
@@ -877,7 +927,7 @@ export function AdminDashboard() {
                     </label>
                   </div>
 
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-4">
                     <label className="grid gap-2 text-sm font-black text-navy-900">
                       상태
                       <input
@@ -915,7 +965,7 @@ export function AdminDashboard() {
                   </button>
                 </form>
 
-                <div className="grid gap-4">
+                <div className="grid min-w-0 gap-4">
                   <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-civic sm:flex-row sm:items-center sm:justify-between">
                     <h3 className="text-xl font-black text-navy-900">등록된 지도 핀</h3>
                     <button type="button" onClick={() => loadMapActivities().catch((error) => setMessage(getAdminErrorMessage(error)))} className="min-h-10 rounded-full border border-navy-900 px-4 text-xs font-black text-navy-900">
@@ -923,11 +973,14 @@ export function AdminDashboard() {
                     </button>
                   </div>
                   {mapActivities.map((item) => (
-                    <article key={item.id} className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-civic">
+                    <article key={item.id} className="grid min-w-0 gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-civic">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-black text-civic-red">{item.category}</span>
                         <span className="rounded-full bg-navy-50 px-3 py-1 text-xs font-black text-navy-900">{item.district}</span>
                         <span className="text-xs font-bold text-slate-500">{item.date}</span>
+                      </div>
+                      <div className="overflow-hidden rounded-xl bg-slate-100">
+                        <img src={item.image || "/images/field.png"} alt={item.title} className="aspect-[16/9] w-full object-cover" />
                       </div>
                       <input
                         defaultValue={item.title}
@@ -938,6 +991,32 @@ export function AdminDashboard() {
                         }}
                         className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-black text-navy-900 outline-none focus:border-civic-blue"
                       />
+                      <div className="grid gap-3 lg:grid-cols-3">
+                        <select
+                          value={item.category}
+                          onChange={(event) => handleMapActivityUpdate(item, "category", event.target.value as ActivityCategory)}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-navy-900 outline-none focus:border-civic-blue"
+                        >
+                          {mapCategories.map((category) => (
+                            <option key={category} value={category}>{category}</option>
+                          ))}
+                        </select>
+                        <select
+                          value={item.district}
+                          onChange={(event) => handleMapActivityUpdate(item, "district", event.target.value)}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-navy-900 outline-none focus:border-civic-blue"
+                        >
+                          {districts.map((district) => (
+                            <option key={district} value={district}>{district}</option>
+                          ))}
+                        </select>
+                        <input
+                          type="date"
+                          value={item.date}
+                          onChange={(event) => handleMapActivityUpdate(item, "date", event.target.value)}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-navy-900 outline-none focus:border-civic-blue"
+                        />
+                      </div>
                       <textarea
                         rows={3}
                         defaultValue={item.summary}
@@ -965,6 +1044,41 @@ export function AdminDashboard() {
                               handleMapActivityUpdate(item, "status", event.target.value);
                             }
                           }}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700 outline-none focus:border-civic-blue"
+                        />
+                      </div>
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <input
+                          defaultValue={item.sourceName}
+                          onBlur={(event) => {
+                            if (event.target.value !== item.sourceName) {
+                              handleMapActivityUpdate(item, "sourceName", event.target.value);
+                            }
+                          }}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700 outline-none focus:border-civic-blue"
+                        />
+                        <select
+                          value={item.sourceType}
+                          onChange={(event) => handleMapActivityUpdate(item, "sourceType", event.target.value as SourceType)}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700 outline-none focus:border-civic-blue"
+                        >
+                          <option value="press">언론 기사</option>
+                          <option value="official">공식 자료</option>
+                        </select>
+                      </div>
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <input
+                          type="number"
+                          step="0.000001"
+                          value={item.lat}
+                          onChange={(event) => handleMapActivityUpdate(item, "lat", Number(event.target.value))}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700 outline-none focus:border-civic-blue"
+                        />
+                        <input
+                          type="number"
+                          step="0.000001"
+                          value={item.lng}
+                          onChange={(event) => handleMapActivityUpdate(item, "lng", Number(event.target.value))}
                           className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700 outline-none focus:border-civic-blue"
                         />
                       </div>
