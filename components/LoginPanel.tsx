@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged, signInWithPopup, signOut, type User } from "firebase/auth";
 import { useEffect, useMemo, useState } from "react";
+import { isAdminEmail } from "@/lib/admin";
 import { getFirebaseAuth, googleProvider, hasFirebaseConfig } from "@/lib/firebase";
 
 export function LoginPanel() {
@@ -35,8 +36,8 @@ export function LoginPanel() {
     try {
       setMessage("");
       const auth = getFirebaseAuth();
-      await signInWithPopup(auth, googleProvider);
-      router.push("/account");
+      const result = await signInWithPopup(auth, googleProvider);
+      router.push(isAdminEmail(result.user.email) ? "/admin" : "/account");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "로그인 중 오류가 발생했습니다.");
     }
@@ -72,9 +73,17 @@ export function LoginPanel() {
               <h3 className="mt-2 text-2xl font-black text-navy-900">{user.displayName || user.email}</h3>
               <p className="mt-3 text-sm font-bold leading-6 text-slate-600">{user.email}</p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                {isAdminEmail(user.email) ? (
+                  <Link
+                    href="/admin"
+                    className="civic-red-button min-h-12 px-6"
+                  >
+                    관리자 콘솔
+                  </Link>
+                ) : null}
                 <Link
                   href="/account"
-                  className="civic-red-button min-h-12 px-6"
+                  className={isAdminEmail(user.email) ? "flex min-h-12 items-center justify-center rounded-full border border-slate-200 px-6 text-sm font-black text-navy-900 transition hover:border-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2" : "civic-red-button min-h-12 px-6"}
                 >
                   내 정보 설정
                 </Link>
