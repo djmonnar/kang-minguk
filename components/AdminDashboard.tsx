@@ -12,9 +12,9 @@ import {
   serverTimestamp,
   updateDoc
 } from "firebase/firestore";
-import { signInWithPopup } from "firebase/auth";
+import { onAuthStateChanged, signInWithPopup, type User } from "firebase/auth";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { isAdminEmail } from "@/lib/admin";
 import { getFirebaseAuth, getFirebaseDb, getFirebaseStorage, googleProvider } from "@/lib/firebase";
 
@@ -93,6 +93,7 @@ export function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [showAccessModal, setShowAccessModal] = useState(false);
+  const [hasAnnouncedAccess, setHasAnnouncedAccess] = useState(false);
   const [members, setMembers] = useState<MemberItem[]>([]);
   const [proposals, setProposals] = useState<ProposalItem[]>([]);
   const [albums, setAlbums] = useState<AlbumItem[]>([]);
@@ -150,26 +151,67 @@ export function AdminDashboard() {
     await Promise.all([loadMembers(), loadProposals(), loadAlbums()]);
   }
 
+  async function confirmAdminAccess(user: User, announceAccess: boolean) {
+    const db = getFirebaseDb();
+    const emailAllowed = isAdminEmail(user.email);
+    const adminDoc = emailAllowed ? null : await getDoc(doc(db, "admins", user.uid));
+
+    if (!emailAllowed && !adminDoc?.exists()) {
+      setIsAdmin(false);
+      setMessage("관리자 권한이 등록되지 않은 계정입니다. 권한 설정을 확인해주세요.");
+      return false;
+    }
+
+    setIsAdmin(true);
+    setMessage("운영자 권한이 활성화되었습니다.");
+
+    if (announceAccess && !hasAnnouncedAccess) {
+      setShowAccessModal(true);
+      setHasAnnouncedAccess(true);
+    }
+
+    await loadAdminData();
+    return true;
+  }
+
+  useEffect(() => {
+    let mounted = true;
+    const auth = getFirebaseAuth();
+    const unsubscribe = onAuthStateChanged(auth, async (nextUser) => {
+      if (!mounted) {
+        return;
+      }
+
+      if (!nextUser) {
+        setIsAdmin(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        await confirmAdminAccess(nextUser, true);
+      } catch (error) {
+        setMessage(error instanceof Error ? error.message : "운영자 권한 확인 중 오류가 발생했습니다.");
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    });
+
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, [hasAnnouncedAccess]);
+
   async function handleAdminLogin() {
     try {
       setLoading(true);
       setMessage("");
       const auth = getFirebaseAuth();
       const result = await signInWithPopup(auth, googleProvider);
-      const db = getFirebaseDb();
-      const emailAllowed = isAdminEmail(result.user.email);
-      const adminDoc = emailAllowed ? null : await getDoc(doc(db, "admins", result.user.uid));
-
-      if (!emailAllowed && !adminDoc?.exists()) {
-        setIsAdmin(false);
-        setMessage("관리자 권한이 등록되지 않은 계정입니다. 권한 설정을 확인해주세요.");
-        return;
-      }
-
-      setIsAdmin(true);
-      setShowAccessModal(true);
-      setMessage("운영자 권한이 활성화되었습니다.");
-      await loadAdminData();
+      await confirmAdminAccess(result.user, true);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "관리자 로그인 중 오류가 발생했습니다.");
     } finally {
