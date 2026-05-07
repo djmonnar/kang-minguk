@@ -37,6 +37,7 @@ export function SignupForm() {
   const [message, setMessage] = useState("");
   const [form, setForm] = useState({
     name: "",
+    birthDate: "",
     phone: "",
     address: "",
     partyMember: "",
@@ -76,6 +77,7 @@ export function SignupForm() {
         {
           uid: result.user.uid,
           name: form.name.trim(),
+          birthDate: form.birthDate.trim(),
           phone: form.phone.trim(),
           address: form.address.trim(),
           partyMember: form.partyMember,
@@ -119,6 +121,20 @@ export function SignupForm() {
             onChange={(event) => updateField("name", event.target.value)}
             className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none transition focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
             placeholder="홍길동"
+          />
+        </label>
+
+        <label className="grid gap-2 text-sm font-black text-navy-900">
+          생년월일 6자리
+          <input
+            required
+            inputMode="numeric"
+            pattern="[0-9]{6}"
+            maxLength={6}
+            value={form.birthDate}
+            onChange={(event) => updateField("birthDate", event.target.value.replace(/\D/g, "").slice(0, 6))}
+            className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none transition focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+            placeholder="910429"
           />
         </label>
 

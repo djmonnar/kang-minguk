@@ -28,6 +28,7 @@ type MemberItem = {
   id: string;
   uid: string;
   name: string;
+  birthDate?: string;
   phone: string;
   address: string;
   partyMember: string;
@@ -54,6 +55,16 @@ type AlbumItem = {
   caption: string;
   imageUrl: string;
   storagePath?: string;
+  published: boolean;
+  createdAt?: TimestampLike;
+};
+
+type NoticeItem = {
+  id: string;
+  title: string;
+  category: string;
+  summary: string;
+  content: string;
   published: boolean;
   createdAt?: TimestampLike;
 };
@@ -87,6 +98,18 @@ function safeFileName(name: string) {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
 }
 
+function getAdminErrorMessage(error: unknown) {
+  if (error instanceof Error && error.message.toLowerCase().includes("missing or insufficient permissions")) {
+    return "Firebase 권한이 아직 적용되지 않았습니다. Firestore Rules와 Storage Rules를 Firebase 콘솔에 배포해주세요.";
+  }
+
+  if (error instanceof Error && error.message.includes("permission-denied")) {
+    return "Firebase 권한이 부족합니다. 관리자 이메일과 Firebase 보안 규칙 배포 상태를 확인해주세요.";
+  }
+
+  return error instanceof Error ? error.message : "처리 중 오류가 발생했습니다.";
+}
+
 export function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("overview");
   const [isAdmin, setIsAdmin] = useState(false);
@@ -97,6 +120,7 @@ export function AdminDashboard() {
   const [members, setMembers] = useState<MemberItem[]>([]);
   const [proposals, setProposals] = useState<ProposalItem[]>([]);
   const [albums, setAlbums] = useState<AlbumItem[]>([]);
+  const [notices, setNotices] = useState<NoticeItem[]>([]);
   const [albumFile, setAlbumFile] = useState<File | null>(null);
   const [albumForm, setAlbumForm] = useState({
     title: "",
@@ -147,8 +171,25 @@ export function AdminDashboard() {
     setAlbums(nextAlbums);
   }
 
+  async function loadNotices() {
+    const db = getFirebaseDb();
+    const snapshot = await getDocs(query(collection(db, "newsPosts"), limit(100)));
+    const nextNotices = snapshot.docs.map((item) => ({
+      id: item.id,
+      ...(item.data() as Omit<NoticeItem, "id">)
+    }));
+
+    nextNotices.sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0));
+    setNotices(nextNotices);
+  }
+
   async function loadAdminData() {
-    await Promise.all([loadMembers(), loadProposals(), loadAlbums()]);
+    const results = await Promise.allSettled([loadMembers(), loadProposals(), loadAlbums(), loadNotices()]);
+    const rejected = results.find((result) => result.status === "rejected");
+
+    if (rejected && rejected.status === "rejected") {
+      setMessage(getAdminErrorMessage(rejected.reason));
+    }
   }
 
   async function confirmAdminAccess(user: User, announceAccess: boolean) {
@@ -191,7 +232,7 @@ export function AdminDashboard() {
         setLoading(true);
         await confirmAdminAccess(nextUser, true);
       } catch (error) {
-        setMessage(error instanceof Error ? error.message : "운영자 권한 확인 중 오류가 발생했습니다.");
+        setMessage(getAdminErrorMessage(error));
       } finally {
         if (mounted) {
           setLoading(false);
@@ -213,7 +254,7 @@ export function AdminDashboard() {
       const result = await signInWithPopup(auth, googleProvider);
       await confirmAdminAccess(result.user, true);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "관리자 로그인 중 오류가 발생했습니다.");
+      setMessage(getAdminErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -256,7 +297,7 @@ export function AdminDashboard() {
       setMessage("앨범 사진이 업로드되었습니다.");
       await loadAlbums();
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "앨범 업로드 중 오류가 발생했습니다.");
+      setMessage(getAdminErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -267,12 +308,17 @@ export function AdminDashboard() {
       return;
     }
 
-    const db = getFirebaseDb();
-    await updateDoc(doc(db, "albumPosts", item.id), {
-      [field]: value,
-      updatedAt: serverTimestamp()
-    });
-    await loadAlbums();
+    try {
+      const db = getFirebaseDb();
+      await updateDoc(doc(db, "albumPosts", item.id), {
+        [field]: value,
+        updatedAt: serverTimestamp()
+      });
+      await loadAlbums();
+      setMessage("앨범 정보가 수정되었습니다.");
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
+    }
   }
 
   async function handleAlbumDelete(item: AlbumItem) {
@@ -280,16 +326,20 @@ export function AdminDashboard() {
       return;
     }
 
-    const db = getFirebaseDb();
-    await deleteDoc(doc(db, "albumPosts", item.id));
+    try {
+      const db = getFirebaseDb();
+      await deleteDoc(doc(db, "albumPosts", item.id));
 
-    if (item.storagePath) {
-      const storage = getFirebaseStorage();
-      await deleteObject(ref(storage, item.storagePath)).catch(() => undefined);
+      if (item.storagePath) {
+        const storage = getFirebaseStorage();
+        await deleteObject(ref(storage, item.storagePath)).catch(() => undefined);
+      }
+
+      setMessage("앨범 사진이 삭제되었습니다.");
+      await loadAlbums();
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
     }
-
-    setMessage("앨범 사진이 삭제되었습니다.");
-    await loadAlbums();
   }
 
   async function handleProposalStatus(item: ProposalItem, status: string) {
@@ -297,12 +347,17 @@ export function AdminDashboard() {
       return;
     }
 
-    const db = getFirebaseDb();
-    await updateDoc(doc(db, "proposals", item.id), {
-      status,
-      updatedAt: serverTimestamp()
-    });
-    await loadProposals();
+    try {
+      const db = getFirebaseDb();
+      await updateDoc(doc(db, "proposals", item.id), {
+        status,
+        updatedAt: serverTimestamp()
+      });
+      await loadProposals();
+      setMessage("민원 상태가 변경되었습니다.");
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
+    }
   }
 
   async function handleNewsSubmit(event: FormEvent<HTMLFormElement>) {
@@ -336,10 +391,44 @@ export function AdminDashboard() {
         published: true
       });
       setMessage("공지사항이 등록되었습니다.");
+      await loadNotices();
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "공지 등록 중 오류가 발생했습니다.");
+      setMessage(getAdminErrorMessage(error));
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleNoticeUpdate(item: NoticeItem, field: "title" | "category" | "summary" | "content" | "published", value: string | boolean) {
+    if (!isAdmin) {
+      return;
+    }
+
+    try {
+      const db = getFirebaseDb();
+      await updateDoc(doc(db, "newsPosts", item.id), {
+        [field]: value,
+        updatedAt: serverTimestamp()
+      });
+      await loadNotices();
+      setMessage("공지사항이 수정되었습니다.");
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
+    }
+  }
+
+  async function handleNoticeDelete(item: NoticeItem) {
+    if (!isAdmin || !window.confirm("이 공지사항을 삭제할까요?")) {
+      return;
+    }
+
+    try {
+      const db = getFirebaseDb();
+      await deleteDoc(doc(db, "newsPosts", item.id));
+      await loadNotices();
+      setMessage("공지사항이 삭제되었습니다.");
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
     }
   }
 
@@ -433,15 +522,16 @@ export function AdminDashboard() {
               <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-civic">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <h3 className="text-2xl font-black text-navy-900">회원 목록</h3>
-                  <button type="button" onClick={loadMembers} className="min-h-10 rounded-full border border-navy-900 px-4 text-xs font-black text-navy-900">
+                  <button type="button" onClick={() => loadMembers().catch((error) => setMessage(getAdminErrorMessage(error)))} className="min-h-10 rounded-full border border-navy-900 px-4 text-xs font-black text-navy-900">
                     새로고침
                   </button>
                 </div>
                 <div className="mt-5 overflow-x-auto">
-                  <table className="w-full min-w-[820px] text-left text-sm">
+                  <table className="w-full min-w-[900px] text-left text-sm">
                     <thead className="bg-slate-50 text-xs font-black text-navy-900">
                       <tr>
                         <th className="px-4 py-3">이름</th>
+                        <th className="px-4 py-3">생년월일</th>
                         <th className="px-4 py-3">전화</th>
                         <th className="px-4 py-3">주소</th>
                         <th className="px-4 py-3">이메일</th>
@@ -453,6 +543,7 @@ export function AdminDashboard() {
                       {members.map((member) => (
                         <tr key={member.id} className="font-bold text-slate-700">
                           <td className="px-4 py-3 text-navy-900">{member.name || "-"}</td>
+                          <td className="px-4 py-3">{member.birthDate || "-"}</td>
                           <td className="px-4 py-3">{member.phone || "-"}</td>
                           <td className="px-4 py-3">{member.address || "-"}</td>
                           <td className="px-4 py-3">{member.email || member.providerEmail || "-"}</td>
@@ -470,7 +561,7 @@ export function AdminDashboard() {
               <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-civic">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <h3 className="text-2xl font-black text-navy-900">민원 게시판</h3>
-                  <button type="button" onClick={loadProposals} className="min-h-10 rounded-full border border-navy-900 px-4 text-xs font-black text-navy-900">
+                  <button type="button" onClick={() => loadProposals().catch((error) => setMessage(getAdminErrorMessage(error)))} className="min-h-10 rounded-full border border-navy-900 px-4 text-xs font-black text-navy-900">
                     새로고침
                   </button>
                 </div>
@@ -575,38 +666,109 @@ export function AdminDashboard() {
             ) : null}
 
             {isAdmin && activeTab === "notices" ? (
-              <form onSubmit={handleNewsSubmit} className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-civic sm:p-8">
-                <h3 className="text-2xl font-black text-navy-900">공지사항 작성</h3>
-                <div className="grid gap-4 md:grid-cols-2">
+              <section className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr]">
+                <form onSubmit={handleNewsSubmit} className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-civic sm:p-8">
+                  <h3 className="text-2xl font-black text-navy-900">공지사항 작성</h3>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      제목
+                      <input required value={newsForm.title} onChange={(event) => setNewsForm((current) => ({ ...current, title: event.target.value }))} className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20" />
+                    </label>
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      분류
+                      <select value={newsForm.category} onChange={(event) => setNewsForm((current) => ({ ...current, category: event.target.value }))} className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20">
+                        <option>공지사항</option>
+                        <option>의정소식</option>
+                        <option>지역소식</option>
+                      </select>
+                    </label>
+                  </div>
                   <label className="grid gap-2 text-sm font-black text-navy-900">
-                    제목
-                    <input required value={newsForm.title} onChange={(event) => setNewsForm((current) => ({ ...current, title: event.target.value }))} className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20" />
+                    요약
+                    <input required value={newsForm.summary} onChange={(event) => setNewsForm((current) => ({ ...current, summary: event.target.value }))} className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20" />
                   </label>
                   <label className="grid gap-2 text-sm font-black text-navy-900">
-                    분류
-                    <select value={newsForm.category} onChange={(event) => setNewsForm((current) => ({ ...current, category: event.target.value }))} className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20">
-                      <option>공지사항</option>
-                      <option>의정소식</option>
-                      <option>지역소식</option>
-                    </select>
+                    내용
+                    <textarea required rows={7} value={newsForm.content} onChange={(event) => setNewsForm((current) => ({ ...current, content: event.target.value }))} className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold leading-6 outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20" />
                   </label>
+                  <label className="flex items-center gap-3 text-sm font-bold text-slate-700">
+                    <input type="checkbox" checked={newsForm.published} onChange={(event) => setNewsForm((current) => ({ ...current, published: event.target.checked }))} className="h-4 w-4 rounded border-slate-300 text-civic-red" />
+                    공개 상태로 등록
+                  </label>
+                  <button type="submit" disabled={loading} className="min-h-12 rounded-full bg-civic-red px-5 text-sm font-black text-white transition hover:bg-red-700 disabled:bg-slate-400">
+                    공지 등록
+                  </button>
+                </form>
+
+                <div className="grid gap-4">
+                  <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-civic sm:flex-row sm:items-center sm:justify-between">
+                    <h3 className="text-xl font-black text-navy-900">공지 목록</h3>
+                    <button type="button" onClick={() => loadNotices().catch((error) => setMessage(getAdminErrorMessage(error)))} className="min-h-10 rounded-full border border-navy-900 px-4 text-xs font-black text-navy-900">
+                      새로고침
+                    </button>
+                  </div>
+                  {notices.map((item) => (
+                    <article key={item.id} className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-civic">
+                      <div className="grid gap-3 md:grid-cols-[1fr_140px]">
+                        <input
+                          defaultValue={item.title}
+                          onBlur={(event) => {
+                            if (event.target.value !== item.title) {
+                              handleNoticeUpdate(item, "title", event.target.value);
+                            }
+                          }}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-black text-navy-900 outline-none focus:border-civic-blue"
+                        />
+                        <select
+                          defaultValue={item.category}
+                          onBlur={(event) => {
+                            if (event.target.value !== item.category) {
+                              handleNoticeUpdate(item, "category", event.target.value);
+                            }
+                          }}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-black text-navy-900 outline-none focus:border-civic-blue"
+                        >
+                          <option>공지사항</option>
+                          <option>의정소식</option>
+                          <option>지역소식</option>
+                        </select>
+                      </div>
+                      <input
+                        defaultValue={item.summary}
+                        onBlur={(event) => {
+                          if (event.target.value !== item.summary) {
+                            handleNoticeUpdate(item, "summary", event.target.value);
+                          }
+                        }}
+                        className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700 outline-none focus:border-civic-blue"
+                      />
+                      <textarea
+                        rows={4}
+                        defaultValue={item.content}
+                        onBlur={(event) => {
+                          if (event.target.value !== item.content) {
+                            handleNoticeUpdate(item, "content", event.target.value);
+                          }
+                        }}
+                        className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold leading-6 text-slate-700 outline-none focus:border-civic-blue"
+                      />
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                          <input type="checkbox" checked={item.published} onChange={(event) => handleNoticeUpdate(item, "published", event.target.checked)} />
+                          공개
+                        </label>
+                        <span className="text-xs font-bold text-slate-500">{formatDate(item.createdAt)}</span>
+                        <button type="button" onClick={() => handleNoticeDelete(item)} className="min-h-10 rounded-full border border-civic-red px-4 text-xs font-black text-civic-red">
+                          삭제
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                  {!notices.length ? (
+                    <p className="rounded-2xl bg-white p-5 text-sm font-bold text-slate-600 shadow-civic">등록된 공지사항이 없습니다.</p>
+                  ) : null}
                 </div>
-                <label className="grid gap-2 text-sm font-black text-navy-900">
-                  요약
-                  <input required value={newsForm.summary} onChange={(event) => setNewsForm((current) => ({ ...current, summary: event.target.value }))} className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20" />
-                </label>
-                <label className="grid gap-2 text-sm font-black text-navy-900">
-                  내용
-                  <textarea required rows={7} value={newsForm.content} onChange={(event) => setNewsForm((current) => ({ ...current, content: event.target.value }))} className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold leading-6 outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20" />
-                </label>
-                <label className="flex items-center gap-3 text-sm font-bold text-slate-700">
-                  <input type="checkbox" checked={newsForm.published} onChange={(event) => setNewsForm((current) => ({ ...current, published: event.target.checked }))} className="h-4 w-4 rounded border-slate-300 text-civic-red" />
-                  공개 상태로 등록
-                </label>
-                <button type="submit" disabled={loading} className="min-h-12 rounded-full bg-civic-red px-5 text-sm font-black text-white transition hover:bg-red-700 disabled:bg-slate-400">
-                  공지 등록
-                </button>
-              </form>
+              </section>
             ) : null}
           </div>
         </div>

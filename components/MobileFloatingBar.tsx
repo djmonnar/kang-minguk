@@ -1,6 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { isAdminEmail } from "@/lib/admin";
+import { getFirebaseAuth } from "@/lib/firebase";
 
 function copyCurrentUrl() {
   if (navigator.clipboard?.writeText) {
@@ -20,6 +24,15 @@ function copyCurrentUrl() {
 }
 
 export function MobileFloatingBar() {
+  const [showAdminLink, setShowAdminLink] = useState(false);
+
+  useEffect(() => {
+    const auth = getFirebaseAuth();
+    return onAuthStateChanged(auth, (user) => {
+      setShowAdminLink(isAdminEmail(user?.email));
+    });
+  }, []);
+
   async function handleShare() {
     const shareData = {
       title: "국회의원 강민국 공식 의정활동 홈페이지",
@@ -41,7 +54,7 @@ export function MobileFloatingBar() {
 
   return (
     <div className="fixed inset-x-0 bottom-4 z-50 px-4 md:hidden" aria-label="모바일 빠른 메뉴">
-      <div className="mx-auto grid max-w-md grid-cols-5 gap-2 rounded-full border border-white/70 bg-white/95 p-2 shadow-[0_18px_50px_rgba(0,27,68,0.22)] backdrop-blur-xl">
+      <div className={["mx-auto grid max-w-md gap-2 rounded-full border border-white/70 bg-white/95 p-2 shadow-[0_18px_50px_rgba(0,27,68,0.22)] backdrop-blur-xl", showAdminLink ? "grid-cols-5" : "grid-cols-4"].join(" ")}>
         <a
           href="tel:027840797"
           className="flex min-h-12 items-center justify-center rounded-full bg-navy-900 px-3 text-xs font-black text-white focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
@@ -71,13 +84,15 @@ export function MobileFloatingBar() {
         >
           가입
         </Link>
-        <Link
-          href="/admin"
-          className="flex min-h-12 items-center justify-center rounded-full bg-civic-red px-3 text-xs font-black text-white focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
-          aria-label="관리자 콘솔 열기"
-        >
-          관리자
-        </Link>
+        {showAdminLink ? (
+          <Link
+            href="/admin"
+            className="flex min-h-12 items-center justify-center rounded-full border border-civic-red bg-white px-3 text-xs font-black text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
+            aria-label="관리자 콘솔 열기"
+          >
+            AD
+          </Link>
+        ) : null}
       </div>
     </div>
   );

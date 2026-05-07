@@ -3,7 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState, type MouseEvent } from "react";
+import { isAdminEmail } from "@/lib/admin";
+import { getFirebaseAuth } from "@/lib/firebase";
 import { imagePaths } from "@/lib/images";
 
 const navLinks = [
@@ -20,8 +23,7 @@ const navLinks = [
 const authLinks = [
   { label: "로그인", href: "/login", style: "outline" },
   { label: "회원가입", href: "/signup", style: "primary" },
-  { label: "내 정보", href: "/account", style: "outline" },
-  { label: "관리자", href: "/admin", style: "admin" }
+  { label: "내 정보", href: "/account", style: "outline" }
 ];
 
 const menuGroups = [
@@ -42,8 +44,7 @@ const menuGroups = [
       { label: "민원·제안하기", href: "/participation" },
       { label: "로그인", href: "/login" },
       { label: "회원가입", href: "/signup" },
-      { label: "내 정보 설정", href: "/account" },
-      { label: "관리자 콘솔", href: "/admin" }
+      { label: "내 정보 설정", href: "/account" }
     ]
   }
 ];
@@ -51,6 +52,14 @@ const menuGroups = [
 export function SiteHeader() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [showAdminLink, setShowAdminLink] = useState(false);
+
+  useEffect(() => {
+    const auth = getFirebaseAuth();
+    return onAuthStateChanged(auth, (user) => {
+      setShowAdminLink(isAdminEmail(user?.email));
+    });
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -169,9 +178,7 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               className={
-                item.style === "admin"
-                  ? "min-h-10 rounded-full bg-civic-red px-4 text-xs font-black text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2 2xl:px-5 2xl:text-sm"
-                  : item.style === "primary"
+                item.style === "primary"
                   ? "civic-navy-button min-h-10 px-4 text-xs 2xl:px-5 2xl:text-sm"
                   : "civic-outline-button min-h-10 px-4 text-xs 2xl:px-5 2xl:text-sm"
               }
@@ -179,6 +186,16 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          {showAdminLink ? (
+            <Link
+              href="/admin"
+              aria-label="관리자 콘솔"
+              title="관리자 콘솔"
+              className="grid h-10 w-10 place-items-center rounded-full border border-civic-red bg-white text-xs font-black text-civic-red transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
+            >
+              AD
+            </Link>
+          ) : null}
         </div>
 
         <button
@@ -227,6 +244,16 @@ export function SiteHeader() {
                         <span aria-hidden="true">→</span>
                       </Link>
                     ))}
+                    {group.title === "소통 채널" && showAdminLink ? (
+                      <Link
+                        href="/admin"
+                        onClick={(event) => handleHeaderNavigation(event, "/admin")}
+                        className="flex min-h-12 items-center justify-between rounded-2xl bg-red-50 px-4 text-sm font-black text-civic-red transition duration-300 hover:bg-civic-red hover:text-white focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
+                      >
+                        <span>관리자 콘솔</span>
+                        <span aria-hidden="true">→</span>
+                      </Link>
+                    ) : null}
                   </div>
                 </section>
               ))}
