@@ -83,6 +83,7 @@ type MapActivityItem = {
   summary: string;
   image?: string;
   storagePath?: string;
+  pinColor?: string;
   lat: number;
   lng: number;
   sourceUrl: string;
@@ -104,6 +105,16 @@ const tabs: { id: ActiveTab; label: string }[] = [
 
 const proposalStatuses = ["접수", "확인중", "처리완료", "보류"];
 const mapCategories = activityFilters.filter((item): item is ActivityCategory => item !== "전체");
+const pinColorOptions = [
+  { label: "빨강", value: "#e61e2b" },
+  { label: "남색", value: "#002b5c" },
+  { label: "파랑", value: "#004ea2" },
+  { label: "하늘", value: "#1d4ed8" },
+  { label: "주황", value: "#f97316" },
+  { label: "초록", value: "#16a34a" },
+  { label: "보라", value: "#7c3aed" },
+  { label: "회색", value: "#334155" }
+];
 
 function formatDate(value?: TimestampLike) {
   if (!value?.seconds) {
@@ -161,6 +172,7 @@ export function AdminDashboard() {
     sourceType: "press" as SourceType,
     status: "등록",
     published: true,
+    pinColor: "#e61e2b",
     lat: JINJU_CENTER.lat,
     lng: JINJU_CENTER.lng
   });
@@ -218,6 +230,7 @@ export function AdminDashboard() {
         summary: data.summary || "",
         image: data.image || "/images/field.png",
         storagePath: data.storagePath || "",
+        pinColor: data.pinColor || pinColorOptions[0].value,
         lat: typeof data.lat === "number" ? data.lat : JINJU_CENTER.lat,
         lng: typeof data.lng === "number" ? data.lng : JINJU_CENTER.lng,
         sourceUrl: data.sourceUrl || "",
@@ -373,6 +386,7 @@ export function AdminDashboard() {
         summary: mapForm.summary.trim(),
         image,
         storagePath,
+        pinColor: mapForm.pinColor,
         lat: Number(mapForm.lat),
         lng: Number(mapForm.lng),
         sourceUrl: mapForm.sourceUrl.trim(),
@@ -395,6 +409,7 @@ export function AdminDashboard() {
         sourceType: "press",
         status: "등록",
         published: true,
+        pinColor: "#e61e2b",
         lat: JINJU_CENTER.lat,
         lng: JINJU_CENTER.lng
       });
@@ -434,6 +449,7 @@ export function AdminDashboard() {
             summary: activity.summary,
             image: activity.image || "/images/field.png",
             storagePath: "",
+            pinColor: activity.pinColor || pinColorOptions[0].value,
             lat: activity.lat,
             lng: activity.lng,
             sourceUrl: activity.sourceUrl || "",
@@ -458,7 +474,7 @@ export function AdminDashboard() {
 
   async function handleMapActivityUpdate(
     item: MapActivityItem,
-    field: "title" | "category" | "district" | "date" | "summary" | "sourceUrl" | "sourceName" | "sourceType" | "status" | "published" | "lat" | "lng",
+    field: "title" | "category" | "district" | "date" | "summary" | "sourceUrl" | "sourceName" | "sourceType" | "status" | "published" | "lat" | "lng" | "pinColor",
     value: string | boolean | number
   ) {
     if (!isAdmin) {
@@ -869,6 +885,20 @@ export function AdminDashboard() {
                     <span className="text-xs font-bold leading-5 text-slate-500">선택하지 않으면 기본 현장 사진으로 등록됩니다.</span>
                   </label>
 
+                  <label className="grid gap-2 text-sm font-black text-navy-900">
+                    핀 색상
+                    <select
+                      value={mapForm.pinColor}
+                      onChange={(event) => updateMapForm("pinColor", event.target.value)}
+                      className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                    >
+                      {pinColorOptions.map((color) => (
+                        <option key={color.value} value={color.value}>{color.label}</option>
+                      ))}
+                    </select>
+                    <span className="inline-flex h-3 w-16 rounded-full" style={{ backgroundColor: mapForm.pinColor }} />
+                  </label>
+
                   <div className="grid gap-4">
                     <label className="grid gap-2 text-sm font-black text-navy-900">
                       위도
@@ -1064,6 +1094,21 @@ export function AdminDashboard() {
                           onChange={(event) => handleMapActivityUpdate(item, "date", event.target.value)}
                           className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-navy-900 outline-none focus:border-civic-blue"
                         />
+                      </div>
+                      <div className="grid gap-2">
+                        <label className="text-xs font-black text-navy-900">핀 색상</label>
+                        <div className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-center">
+                          <select
+                            value={item.pinColor || pinColorOptions[0].value}
+                            onChange={(event) => handleMapActivityUpdate(item, "pinColor", event.target.value)}
+                            className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-navy-900 outline-none focus:border-civic-blue"
+                          >
+                            {pinColorOptions.map((color) => (
+                              <option key={color.value} value={color.value}>{color.label}</option>
+                            ))}
+                          </select>
+                          <span className="h-8 w-full rounded-full sm:w-16" style={{ backgroundColor: item.pinColor || pinColorOptions[0].value }} />
+                        </div>
                       </div>
                       <textarea
                         rows={3}

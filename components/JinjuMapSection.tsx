@@ -17,6 +17,7 @@ type MapActivityPost = {
   date: string;
   summary: string;
   image?: string;
+  pinColor?: string;
   lat: number;
   lng: number;
   sourceUrl?: string;
@@ -51,6 +52,7 @@ function toActivity(id: string, data: MapActivityPost): Activity {
     date: data.date,
     summary: data.summary,
     image: normalizeImagePath(data.image),
+    pinColor: data.pinColor,
     lat: Number(data.lat),
     lng: Number(data.lng),
     sourceUrl: data.sourceUrl || "/activities",

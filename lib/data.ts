@@ -15,6 +15,7 @@ export type Activity = {
   date: string;
   summary: string;
   image: string;
+  pinColor?: string;
   lat: number;
   lng: number;
   sourceUrl: string;

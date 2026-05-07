@@ -42,7 +42,7 @@ function loadNaverMaps() {
 }
 
 function markerContent(activity: Activity, selected: boolean) {
-  const bg = selected ? "#e61e2b" : markerColors[activity.category];
+  const bg = selected ? "#e61e2b" : activity.pinColor || markerColors[activity.category];
   const shadow = selected
     ? "0 14px 30px rgba(230,30,43,.36)"
     : "0 10px 24px rgba(0,27,68,.24)";

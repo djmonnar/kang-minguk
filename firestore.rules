@@ -134,6 +134,7 @@ service cloud.firestore {
           "summary",
           "image",
           "storagePath",
+          "pinColor",
           "lat",
           "lng",
           "sourceUrl",
@@ -153,6 +154,10 @@ service cloud.firestore {
         && (
           !request.resource.data.keys().hasAny(["storagePath"])
           || request.resource.data.storagePath is string
+        )
+        && (
+          !request.resource.data.keys().hasAny(["pinColor"])
+          || request.resource.data.pinColor.matches("^#[0-9a-fA-F]{6}$")
         )
         && request.resource.data.lat is number
         && request.resource.data.lng is number
