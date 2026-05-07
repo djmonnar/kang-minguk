@@ -20,7 +20,8 @@ const navLinks = [
 const authLinks = [
   { label: "로그인", href: "/login", style: "outline" },
   { label: "회원가입", href: "/signup", style: "primary" },
-  { label: "내 정보", href: "/account", style: "outline" }
+  { label: "내 정보", href: "/account", style: "outline" },
+  { label: "관리자", href: "/admin", style: "admin" }
 ];
 
 const menuGroups = [
@@ -41,7 +42,8 @@ const menuGroups = [
       { label: "민원·제안하기", href: "/participation" },
       { label: "로그인", href: "/login" },
       { label: "회원가입", href: "/signup" },
-      { label: "내 정보 설정", href: "/account" }
+      { label: "내 정보 설정", href: "/account" },
+      { label: "관리자 콘솔", href: "/admin" }
     ]
   }
 ];
@@ -167,7 +169,9 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               className={
-                item.style === "primary"
+                item.style === "admin"
+                  ? "min-h-10 rounded-full bg-civic-red px-4 text-xs font-black text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2 2xl:px-5 2xl:text-sm"
+                  : item.style === "primary"
                   ? "civic-navy-button min-h-10 px-4 text-xs 2xl:px-5 2xl:text-sm"
                   : "civic-outline-button min-h-10 px-4 text-xs 2xl:px-5 2xl:text-sm"
               }
