@@ -494,6 +494,73 @@ export function AdminDashboard() {
     }
   }
 
+  async function handleMapActivityImageUpdate(item: MapActivityItem, event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!isAdmin || !file) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setMessage("");
+      const storagePath = `mapActivities/${safeFileName(file.name)}`;
+      const storage = getFirebaseStorage();
+      const storageRef = ref(storage, storagePath);
+      await uploadBytes(storageRef, file);
+      const image = await getDownloadURL(storageRef);
+
+      const db = getFirebaseDb();
+      await updateDoc(doc(db, "mapActivities", item.id), {
+        image,
+        storagePath,
+        updatedAt: serverTimestamp()
+      });
+
+      if (item.storagePath) {
+        await deleteObject(ref(storage, item.storagePath)).catch(() => undefined);
+      }
+
+      setMessage("지도핀 사진이 수정되었습니다.");
+      await loadMapActivities();
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleMapActivityImageDelete(item: MapActivityItem) {
+    if (!isAdmin || !window.confirm("이 지도핀 사진을 삭제하고 기본 이미지로 되돌릴까요?")) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setMessage("");
+      const storage = getFirebaseStorage();
+
+      if (item.storagePath) {
+        await deleteObject(ref(storage, item.storagePath)).catch(() => undefined);
+      }
+
+      const db = getFirebaseDb();
+      await updateDoc(doc(db, "mapActivities", item.id), {
+        image: "/images/field.png",
+        storagePath: "",
+        updatedAt: serverTimestamp()
+      });
+
+      setMessage("지도핀 사진이 삭제되었습니다.");
+      await loadMapActivities();
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleMapActivityDelete(item: MapActivityItem) {
     if (!isAdmin || !window.confirm("이 지도 핀을 삭제할까요?")) {
       return;
@@ -1059,6 +1126,25 @@ export function AdminDashboard() {
                       </div>
                       <div className="overflow-hidden rounded-xl bg-slate-100">
                         <img src={item.image || "/images/field.png"} alt={item.title} className="aspect-[16/9] w-full object-cover" />
+                      </div>
+                      <div className="grid gap-2 rounded-2xl bg-slate-50 p-3">
+                        <label className="grid gap-2 text-xs font-black text-navy-900">
+                          지도핀 사진 수정
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) => handleMapActivityImageUpdate(item, event)}
+                            className="min-h-10 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold"
+                          />
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => handleMapActivityImageDelete(item)}
+                          disabled={loading}
+                          className="min-h-10 rounded-full border border-civic-red px-4 text-xs font-black text-civic-red transition hover:bg-red-50 disabled:cursor-not-allowed disabled:border-slate-300 disabled:text-slate-400"
+                        >
+                          사진 삭제
+                        </button>
                       </div>
                       <input
                         defaultValue={item.title}
