@@ -53,68 +53,71 @@ const donationNotices = [
 
 export function ProfileInfoSection() {
   return (
-    <section id="profile-info" className="bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] px-5 py-20 sm:px-8 lg:px-10">
+    <section id="profile-info" className="bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] px-5 py-16 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Official Profile"
           title="강민국 의원 프로필"
-          description="경력, 학력, 의원실 정보와 후원회 안내를 정리했습니다."
+          description="기본정보, 주요 약력, 의원실 정보와 후원회 안내를 보기 쉽게 정리했습니다."
         />
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
-          <div className="grid gap-5">
-            <div className="civic-card overflow-hidden shadow-civic">
-              <div className="relative mx-auto aspect-[4/5] max-w-[360px] bg-navy-50 lg:max-w-none">
-                <Image
-                  src={imagePaths.profileOfficial}
-                  alt="국회의원 강민국 공식 프로필 사진"
-                  fill
-                  sizes="(min-width: 1024px) 34vw, 86vw"
-                  className="object-cover object-top"
-                />
-              </div>
-              <div className="border-t border-slate-100 p-6 sm:p-8">
-                <p className="text-sm font-black uppercase tracking-[0.28em] text-civic-red">Official Profile</p>
-                <h3 className="mt-3 text-3xl font-black text-navy-900">국회의원 강민국</h3>
-                <p className="mt-3 text-sm font-bold leading-6 text-slate-600">
-                  진주의 현장 목소리를 국회 의정활동과 정책 과제로 연결합니다.
-                </p>
-              </div>
+        <div className="mt-10 grid gap-6 lg:grid-cols-[360px_1fr] xl:grid-cols-[400px_1fr]">
+          <aside className="civic-card overflow-hidden shadow-civic">
+            <div className="relative aspect-[4/5] bg-navy-50">
+              <Image
+                src={imagePaths.profileOfficial}
+                alt="국회의원 강민국 공식 프로필 사진"
+                fill
+                sizes="(min-width: 1280px) 400px, (min-width: 1024px) 360px, 92vw"
+                className="object-cover object-top"
+              />
             </div>
+            <div className="border-t border-slate-100 p-6">
+              <p className="text-sm font-black uppercase tracking-[0.24em] text-civic-red">KANG MINKUK</p>
+              <h3 className="mt-3 text-3xl font-black text-navy-900">국회의원 강민국</h3>
+              <p className="mt-3 text-sm font-bold leading-6 text-slate-600">
+                진주의 현장 목소리를 국회 의정활동과 정책 과제로 연결합니다.
+              </p>
+            </div>
+          </aside>
 
-            <div className="civic-card p-6 sm:p-8">
-              <h4 className="text-base font-black text-navy-900">의원실 정보</h4>
-              <div className="mt-4 grid gap-2">
-                {contactItems.map((item) => (
-                  <div key={item.label} className="flex justify-between gap-4 text-sm">
-                    <span className="font-bold text-slate-500">{item.label}</span>
-                    <span className="font-bold text-slate-800">{item.value}</span>
+          <div className="grid gap-6">
+            <section className="civic-card p-6 shadow-civic sm:p-8">
+              <div className="grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
+                <div>
+                  <p className="text-sm font-black uppercase tracking-[0.24em] text-civic-red">Basic Information</p>
+                  <h3 className="mt-3 text-3xl font-black text-navy-900">기본 정보</h3>
+                  <div className="mt-6 grid gap-3">
+                    {profileFacts.map((item) => (
+                      <div key={item.label} className="grid gap-2 rounded-xl bg-navy-50 px-4 py-3 sm:grid-cols-[86px_1fr]">
+                        <span className="text-sm font-black text-civic-blue">{item.label}</span>
+                        <span className="text-sm font-bold leading-6 text-navy-900">{item.value}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
+                </div>
 
-          <div className="grid gap-5">
-            <div className="civic-card p-6 sm:p-8">
-              <p className="text-sm font-black uppercase tracking-[0.28em] text-civic-red">Basic Information</p>
-              <h3 className="mt-3 text-3xl font-black text-navy-900">강민국</h3>
-              <div className="mt-7 grid gap-3">
-                {profileFacts.map((item) => (
-                  <div key={item.label} className="grid gap-2 rounded-2xl bg-navy-50 p-4 sm:grid-cols-[90px_1fr]">
-                    <span className="text-sm font-black text-civic-blue">{item.label}</span>
-                    <span className="text-sm font-bold leading-6 text-navy-900">{item.value}</span>
+                <div className="rounded-2xl bg-navy-900 p-5 text-white">
+                  <p className="text-sm font-black uppercase tracking-[0.2em] text-red-100">Office</p>
+                  <h4 className="mt-3 text-xl font-black">의원실 정보</h4>
+                  <div className="mt-5 grid gap-3">
+                    {contactItems.map((item) => (
+                      <div key={item.label} className="rounded-xl border border-white/10 bg-white/10 p-4">
+                        <p className="text-xs font-black text-red-100">{item.label}</p>
+                        <p className="mt-2 text-sm font-black leading-6 text-white">{item.value}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
+            </section>
 
-            <div className="civic-card p-6 sm:p-8">
-              <p className="text-sm font-black uppercase tracking-[0.28em] text-civic-red">Education & Career</p>
-              <div className="mt-6 grid gap-5 md:grid-cols-2">
+            <section className="civic-card p-6 shadow-civic sm:p-8">
+              <p className="text-sm font-black uppercase tracking-[0.24em] text-civic-red">Education & Career</p>
+              <div className="mt-6 grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">
                 <article>
                   <h4 className="text-xl font-black text-navy-900">학력</h4>
-                  <ul className="mt-4 space-y-3">
+                  <ul className="mt-4 grid gap-3">
                     {educationItems.map((item) => (
                       <li key={item} className="rounded-xl bg-slate-50 px-4 py-3 text-sm font-bold leading-6 text-slate-700">
                         {item}
@@ -124,7 +127,7 @@ export function ProfileInfoSection() {
                 </article>
                 <article>
                   <h4 className="text-xl font-black text-navy-900">주요 약력</h4>
-                  <ul className="mt-4 space-y-3">
+                  <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                     {careerItems.map((item) => (
                       <li key={item} className="rounded-xl bg-slate-50 px-4 py-3 text-sm font-bold leading-6 text-slate-700">
                         {item}
@@ -133,67 +136,71 @@ export function ProfileInfoSection() {
                   </ul>
                 </article>
               </div>
-            </div>
-
-            <div className="civic-card overflow-hidden shadow-civic">
-              <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
-                <div className="relative min-h-[520px] bg-navy-50 sm:min-h-[680px] lg:min-h-[760px]">
-                  <Image
-                    src={imagePaths.donationGuide}
-                    alt="강민국 의원 후원회 안내 포스터"
-                    fill
-                    sizes="(min-width: 1024px) 36vw, 92vw"
-                    className="object-contain"
-                  />
-                </div>
-                <div className="bg-navy-900 p-6 text-white sm:p-8">
-                  <p className="text-sm font-black uppercase tracking-[0.28em] text-red-100">Support Committee</p>
-                  <h4 className="mt-3 text-2xl font-black">강민국 의원 후원회 안내</h4>
-                  <p className="mt-3 text-sm font-bold leading-6 text-white/76">
-                    깨끗한 정치와 투명한 후원을 위한 후원회 정보를 확인하실 수 있습니다.
-                  </p>
-
-                  <div className="mt-6 grid gap-3">
-                    {donationItems.map((item) => (
-                      <div key={item.label} className="rounded-2xl border border-white/10 bg-white/10 p-4">
-                        <p className="text-xs font-black uppercase tracking-[0.18em] text-red-100">{item.label}</p>
-                        <p className="mt-2 text-base font-black text-white">{item.value}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-6 rounded-2xl border border-white/10 bg-white/10 p-5">
-                    <h5 className="text-base font-black text-white">후원 가능 금액 및 세액공제</h5>
-                    <ul className="mt-4 space-y-2 text-sm font-bold leading-6 text-white/78">
-                      {donationLimits.map((item) => (
-                        <li key={item}>· {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="mt-4 rounded-2xl border border-white/10 bg-white/10 p-5">
-                    <h5 className="text-base font-black text-white">확인사항</h5>
-                    <ul className="mt-4 space-y-2 text-sm font-bold leading-6 text-white/78">
-                      {donationNotices.map((item) => (
-                        <li key={item}>· {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <a
-                    href="https://www.give.go.kr"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-civic-red px-6 text-sm font-black text-white shadow-civic transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-navy-900"
-                  >
-                    정치후원금센터 바로가기
-                  </a>
-                </div>
-              </div>
-            </div>
+            </section>
           </div>
         </div>
 
+        <section className="civic-card mt-6 overflow-hidden shadow-civic">
+          <div className="grid gap-0 lg:grid-cols-[360px_1fr] xl:grid-cols-[420px_1fr]">
+            <div className="bg-navy-50 p-5 sm:p-8">
+              <div className="relative mx-auto aspect-[3/4] max-w-[360px] overflow-hidden rounded-2xl bg-white shadow-civic-soft">
+                <Image
+                  src={imagePaths.donationGuide}
+                  alt="강민국 의원 후원회 안내 포스터"
+                  fill
+                  sizes="(min-width: 1280px) 360px, 86vw"
+                  className="object-contain"
+                />
+              </div>
+            </div>
+
+            <div className="bg-navy-900 p-6 text-white sm:p-8">
+              <p className="text-sm font-black uppercase tracking-[0.24em] text-red-100">Support Committee</p>
+              <h4 className="mt-3 text-2xl font-black">강민국 의원 후원회 안내</h4>
+              <p className="mt-3 text-sm font-bold leading-6 text-white/76">
+                깨끗한 정치와 투명한 후원을 위한 후원회 정보를 확인하실 수 있습니다.
+              </p>
+
+              <div className="mt-6 grid gap-3 md:grid-cols-2">
+                {donationItems.map((item) => (
+                  <div key={item.label} className="rounded-2xl border border-white/10 bg-white/10 p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-red-100">{item.label}</p>
+                    <p className="mt-2 text-base font-black leading-6 text-white">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 grid gap-4 xl:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-white/10 p-5">
+                  <h5 className="text-base font-black text-white">후원 가능 금액 및 세액공제</h5>
+                  <ul className="mt-4 space-y-2 text-sm font-bold leading-6 text-white/78">
+                    {donationLimits.map((item) => (
+                      <li key={item}>· {item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/10 p-5">
+                  <h5 className="text-base font-black text-white">확인사항</h5>
+                  <ul className="mt-4 space-y-2 text-sm font-bold leading-6 text-white/78">
+                    {donationNotices.map((item) => (
+                      <li key={item}>· {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <a
+                href="https://www.give.go.kr"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-civic-red px-6 text-sm font-black text-white shadow-civic transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-navy-900"
+              >
+                정치후원금센터 바로가기
+              </a>
+            </div>
+          </div>
+        </section>
       </div>
     </section>
   );

@@ -23,6 +23,7 @@ export function AccountSettings() {
   const [message, setMessage] = useState("");
   const [form, setForm] = useState({
     name: "",
+    birthDate: "",
     phone: "",
     address: "",
     partyMember: "prefer_not_to_say",
@@ -55,6 +56,7 @@ export function AccountSettings() {
           const data = snapshot.data();
           setForm({
             name: typeof data.name === "string" ? data.name : nextUser.displayName || "",
+            birthDate: typeof data.birthDate === "string" ? data.birthDate : "",
             phone: typeof data.phone === "string" ? data.phone : "",
             address: typeof data.address === "string" ? data.address : "",
             partyMember: typeof data.partyMember === "string" ? data.partyMember : "prefer_not_to_say",
@@ -102,6 +104,7 @@ export function AccountSettings() {
         {
           uid: user.uid,
           name: form.name.trim(),
+          birthDate: form.birthDate.trim(),
           phone: form.phone.trim(),
           address: form.address.trim(),
           partyMember: form.partyMember,
@@ -214,6 +217,19 @@ export function AccountSettings() {
                     value={form.phone}
                     onChange={(event) => updateField("phone", event.target.value)}
                     className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none transition focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm font-black text-navy-900">
+                  생년월일 6자리
+                  <input
+                    required
+                    inputMode="numeric"
+                    pattern="[0-9]{6}"
+                    maxLength={6}
+                    value={form.birthDate}
+                    onChange={(event) => updateField("birthDate", event.target.value.replace(/\D/g, "").slice(0, 6))}
+                    className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none transition focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                    placeholder="910429"
                   />
                 </label>
                 <label className="grid gap-2 text-sm font-black text-navy-900 md:col-span-2">
