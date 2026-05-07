@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { addDoc, collection, doc, getDoc, getDocs, limit, query, serverTimestamp, where } from "firebase/firestore";
-import { signInWithPopup } from "firebase/auth";
 import { FormEvent, useState } from "react";
+import { KakaoLoginNotice } from "@/components/KakaoLoginNotice";
+import { getAuthErrorMessage, signInWithGoogle } from "@/lib/authBrowser";
 import { getFirebaseAuth, getFirebaseDb, googleProvider } from "@/lib/firebase";
 
 type ProposalItem = {
@@ -45,7 +46,7 @@ export function ProposalBoard() {
       setLoading(true);
       setMessage("");
       const auth = getFirebaseAuth();
-      const result = await signInWithPopup(auth, googleProvider);
+      const result = await signInWithGoogle(auth, googleProvider);
       const db = getFirebaseDb();
       const memberDoc = await getDoc(doc(db, "members", result.user.uid));
 
@@ -59,7 +60,7 @@ export function ProposalBoard() {
 
       await loadMyProposals(result.user.uid);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "로그인 중 오류가 발생했습니다.");
+      setMessage(getAuthErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -111,6 +112,10 @@ export function ProposalBoard() {
           <div className="rounded-2xl border border-white/10 bg-white/10 p-4">회원가입 후 작성할 수 있습니다.</div>
           <div className="rounded-2xl border border-white/10 bg-white/10 p-4">게시글은 공개 목록에 노출되지 않습니다.</div>
           <div className="rounded-2xl border border-white/10 bg-white/10 p-4">관리자 계정만 전체 민원을 확인할 수 있습니다.</div>
+        </div>
+
+        <div className="mt-5">
+          <KakaoLoginNotice />
         </div>
 
         <button

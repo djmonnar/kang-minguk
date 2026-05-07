@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import { onAuthStateChanged, signInWithPopup, signOut, type User } from "firebase/auth";
+import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { KakaoLoginNotice } from "@/components/KakaoLoginNotice";
+import { getAuthErrorMessage, signInWithGoogle } from "@/lib/authBrowser";
 import { getFirebaseAuth, getFirebaseDb, googleProvider, hasFirebaseConfig } from "@/lib/firebase";
 
 type SubmitState = "idle" | "loading" | "success" | "error";
@@ -76,8 +78,13 @@ export function AccountSettings() {
   }
 
   async function handleLogin() {
-    const auth = getFirebaseAuth();
-    await signInWithPopup(auth, googleProvider);
+    try {
+      setMessage("");
+      const auth = getFirebaseAuth();
+      await signInWithGoogle(auth, googleProvider);
+    } catch (error) {
+      setMessage(getAuthErrorMessage(error));
+    }
   }
 
   async function handleLogout() {
@@ -154,6 +161,7 @@ export function AccountSettings() {
         </aside>
 
         <div className="civic-card p-5 shadow-civic sm:p-8">
+          <KakaoLoginNotice />
           {loading ? (
             <p className="text-sm font-black text-navy-900">회원 정보를 확인하는 중입니다.</p>
           ) : !user ? (

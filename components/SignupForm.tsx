@@ -1,9 +1,10 @@
 "use client";
 
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
+import { KakaoLoginNotice } from "@/components/KakaoLoginNotice";
+import { signInWithGoogle } from "@/lib/authBrowser";
 import { getFirebaseAuth, getFirebaseDb, googleProvider, hasFirebaseConfig } from "@/lib/firebase";
 
 type SubmitState = "idle" | "loading" | "success" | "error";
@@ -69,7 +70,7 @@ export function SignupForm() {
       setState("loading");
       setMessage("");
       const auth = getFirebaseAuth();
-      const result = await signInWithPopup(auth, googleProvider);
+      const result = await signInWithGoogle(auth, googleProvider);
       const db = getFirebaseDb();
 
       await setDoc(
@@ -111,6 +112,8 @@ export function SignupForm() {
           회원가입 기능을 준비 중입니다. 설정이 완료되면 신청할 수 있습니다.
         </div>
       ) : null}
+
+      <KakaoLoginNotice />
 
       <div className="grid gap-5 md:grid-cols-2">
         <label className="grid gap-2 text-sm font-black text-navy-900">

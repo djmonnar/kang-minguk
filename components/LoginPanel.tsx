@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { onAuthStateChanged, signInWithPopup, signOut, type User } from "firebase/auth";
+import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { useEffect, useMemo, useState } from "react";
+import { KakaoLoginNotice } from "@/components/KakaoLoginNotice";
 import { isAdminEmail } from "@/lib/admin";
+import { getAuthErrorMessage, signInWithGoogle } from "@/lib/authBrowser";
 import { getFirebaseAuth, googleProvider, hasFirebaseConfig } from "@/lib/firebase";
 
 export function LoginPanel() {
@@ -36,10 +38,10 @@ export function LoginPanel() {
     try {
       setMessage("");
       const auth = getFirebaseAuth();
-      const result = await signInWithPopup(auth, googleProvider);
+      const result = await signInWithGoogle(auth, googleProvider);
       router.push(isAdminEmail(result.user.email) ? "/admin" : "/account");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "로그인 중 오류가 발생했습니다.");
+      setMessage(getAuthErrorMessage(error));
     }
   }
 
@@ -65,6 +67,7 @@ export function LoginPanel() {
         </div>
 
         <div className="civic-card p-6 shadow-civic sm:p-8">
+          <KakaoLoginNotice />
           {loading ? (
             <p className="text-sm font-black text-navy-900">로그인 상태를 확인하는 중입니다.</p>
           ) : user ? (

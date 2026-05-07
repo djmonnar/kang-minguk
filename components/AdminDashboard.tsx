@@ -12,11 +12,13 @@ import {
   serverTimestamp,
   updateDoc
 } from "firebase/firestore";
-import { onAuthStateChanged, signInWithPopup, type User } from "firebase/auth";
+import { onAuthStateChanged, type User } from "firebase/auth";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { AdminMapPicker } from "@/components/AdminMapPicker";
+import { KakaoLoginNotice } from "@/components/KakaoLoginNotice";
 import { isAdminEmail } from "@/lib/admin";
+import { signInWithGoogle } from "@/lib/authBrowser";
 import { getFirebaseAuth, getFirebaseDb, getFirebaseStorage, googleProvider } from "@/lib/firebase";
 import { JINJU_CENTER } from "@/lib/naverMap";
 import { activityFilters, districts, type ActivityCategory, type SourceType } from "@/lib/data";
@@ -301,7 +303,7 @@ export function AdminDashboard() {
       setLoading(true);
       setMessage("");
       const auth = getFirebaseAuth();
-      const result = await signInWithPopup(auth, googleProvider);
+      const result = await signInWithGoogle(auth, googleProvider);
       await confirmAdminAccess(result.user, true);
     } catch (error) {
       setMessage(getAdminErrorMessage(error));
@@ -606,6 +608,10 @@ export function AdminDashboard() {
             <p className="mt-3 text-sm font-bold leading-6 text-white/72">
               관리자 인증 후 회원, 민원, 앨범, 공지를 한 곳에서 관리합니다.
             </p>
+            <div className="mt-5">
+              <KakaoLoginNotice />
+            </div>
+
             <button
               type="button"
               onClick={handleAdminLogin}
