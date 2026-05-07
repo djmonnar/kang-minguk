@@ -21,7 +21,7 @@ import { isAdminEmail } from "@/lib/admin";
 import { signInWithGoogle } from "@/lib/authBrowser";
 import { getFirebaseAuth, getFirebaseDb, getFirebaseStorage, googleProvider } from "@/lib/firebase";
 import { JINJU_CENTER } from "@/lib/naverMap";
-import { activityFilters, districts, type ActivityCategory, type SourceType } from "@/lib/data";
+import { activities, activityFilters, districts, type ActivityCategory, type SourceType } from "@/lib/data";
 
 type ActiveTab = "overview" | "members" | "proposals" | "map" | "albums" | "notices";
 
@@ -400,6 +400,54 @@ export function AdminDashboard() {
       });
       setMessage("지도 핀이 등록되었습니다.");
       setMapFile(null);
+      await loadMapActivities();
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSeedMapActivities() {
+    if (!isAdmin) {
+      setMessage("관리자 인증 후 기본 지도핀을 가져올 수 있습니다.");
+      return;
+    }
+
+    if (mapActivities.length) {
+      setMessage("이미 등록된 지도핀이 있어 기본 지도핀 가져오기를 중단했습니다.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setMessage("");
+      const db = getFirebaseDb();
+
+      await Promise.all(
+        activities.map((activity) =>
+          addDoc(collection(db, "mapActivities"), {
+            title: activity.title,
+            category: activity.category,
+            district: activity.district,
+            date: activity.date,
+            summary: activity.summary,
+            image: activity.image || "/images/field.png",
+            storagePath: "",
+            lat: activity.lat,
+            lng: activity.lng,
+            sourceUrl: activity.sourceUrl || "",
+            sourceName: activity.sourceName || "관련 기사",
+            sourceType: activity.sourceType || "press",
+            status: activity.status || "등록",
+            published: true,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          })
+        )
+      );
+
+      setMessage("기본 지도핀을 관리자 데이터로 가져왔습니다.");
       await loadMapActivities();
     } catch (error) {
       setMessage(getAdminErrorMessage(error));
@@ -1096,6 +1144,19 @@ export function AdminDashboard() {
                       </div>
                     </article>
                   ))}
+                  {!mapActivities.length ? (
+                    <div className="rounded-2xl bg-white p-5 shadow-civic">
+                      <p className="text-sm font-bold leading-6 text-slate-600">등록된 지도핀이 없습니다. 기존 홈페이지 기본 지도핀을 관리자 데이터로 가져오면 이 화면에서 수정할 수 있습니다.</p>
+                      <button
+                        type="button"
+                        onClick={handleSeedMapActivities}
+                        disabled={loading}
+                        className="mt-4 min-h-11 rounded-full bg-navy-900 px-5 text-sm font-black text-white transition hover:bg-navy-800 disabled:bg-slate-400"
+                      >
+                        기본 지도핀 가져오기
+                      </button>
+                    </div>
+                  ) : null}
                   {!mapActivities.length ? (
                     <p className="rounded-2xl bg-white p-5 text-sm font-bold text-slate-600 shadow-civic">등록된 지도 핀이 없습니다.</p>
                   ) : null}
