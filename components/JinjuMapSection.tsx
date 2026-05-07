@@ -1,11 +1,30 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { NaverMap } from "@/components/NaverMap";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SourceBadge, getSourceActionLabel } from "@/components/SourceBadge";
-import { activities, activityFilters, districts, type Activity } from "@/lib/data";
+import { activities, activityFilters, districts, type Activity, type ActivityCategory, type SourceType } from "@/lib/data";
+import { getFirebaseDb } from "@/lib/firebase";
+import { withBasePath } from "@/lib/paths";
+
+type MapActivityPost = {
+  title: string;
+  category: ActivityCategory;
+  district: string;
+  date: string;
+  summary: string;
+  image?: string;
+  lat: number;
+  lng: number;
+  sourceUrl?: string;
+  sourceName?: string;
+  sourceType?: SourceType;
+  status?: string;
+  published?: boolean;
+};
 
 const categoryStyles: Record<Activity["category"], string> = {
   현장방문: "bg-civic-blue text-white",
@@ -15,6 +34,31 @@ const categoryStyles: Record<Activity["category"], string> = {
   입법: "bg-blue-100 text-navy-800",
   일정: "bg-slate-700 text-white"
 };
+
+function normalizeImagePath(image?: string) {
+  if (!image) return withBasePath("/images/field.png");
+  if (image.startsWith("http")) return image;
+  if (image.startsWith("/")) return withBasePath(image);
+  return image;
+}
+
+function toActivity(id: string, data: MapActivityPost): Activity {
+  return {
+    id,
+    title: data.title,
+    category: data.category,
+    district: data.district,
+    date: data.date,
+    summary: data.summary,
+    image: normalizeImagePath(data.image),
+    lat: Number(data.lat),
+    lng: Number(data.lng),
+    sourceUrl: data.sourceUrl || "/activities",
+    sourceName: data.sourceName || "관리자 등록",
+    sourceType: data.sourceType || "official",
+    status: data.status || "등록"
+  };
+}
 
 function ActivityDetail({ activity }: { activity: Activity }) {
   return (
@@ -26,6 +70,7 @@ function ActivityDetail({ activity }: { activity: Activity }) {
           fill
           sizes="(min-width: 1024px) 31vw, 90vw"
           className="object-cover"
+          unoptimized={activity.image.startsWith("http")}
         />
       </div>
       <div className="flex flex-wrap items-center gap-2">
@@ -52,8 +97,8 @@ function ActivityDetail({ activity }: { activity: Activity }) {
       {activity.sourceUrl ? (
         <a
           href={activity.sourceUrl}
-          target="_blank"
-          rel="noreferrer"
+          target={activity.sourceUrl.startsWith("/") ? undefined : "_blank"}
+          rel={activity.sourceUrl.startsWith("/") ? undefined : "noreferrer"}
           className="civic-outline-button mt-5 min-h-10 px-4"
           aria-label={`${activity.title} ${getSourceActionLabel(activity.sourceType)}`}
         >
@@ -67,14 +112,47 @@ function ActivityDetail({ activity }: { activity: Activity }) {
 export function JinjuMapSection() {
   const [filter, setFilter] = useState<(typeof activityFilters)[number]>("전체");
   const [selectedId, setSelectedId] = useState(activities[0]?.id ?? "");
+  const [adminActivities, setAdminActivities] = useState<Activity[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadMapActivities() {
+      try {
+        const db = getFirebaseDb();
+        const snapshot = await getDocs(query(collection(db, "mapActivities"), where("published", "==", true), limit(100)));
+        const nextActivities = snapshot.docs
+          .map((item) => toActivity(`map-${item.id}`, item.data() as MapActivityPost))
+          .filter((activity) => Number.isFinite(activity.lat) && Number.isFinite(activity.lng));
+
+        nextActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        if (mounted) {
+          setAdminActivities(nextActivities);
+        }
+      } catch {
+        if (mounted) {
+          setAdminActivities([]);
+        }
+      }
+    }
+
+    loadMapActivities();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const allActivities = useMemo(() => [...adminActivities, ...activities], [adminActivities]);
 
   const filteredActivities = useMemo(() => {
-    if (filter === "전체") return activities;
-    return activities.filter((activity) => activity.category === filter);
-  }, [filter]);
+    if (filter === "전체") return allActivities;
+    return allActivities.filter((activity) => activity.category === filter);
+  }, [allActivities, filter]);
 
   const selectedActivity =
-    filteredActivities.find((activity) => activity.id === selectedId) ?? filteredActivities[0] ?? activities[0];
+    filteredActivities.find((activity) => activity.id === selectedId) ?? filteredActivities[0] ?? allActivities[0];
 
   const handleSelectActivity = useCallback((id: string) => {
     setSelectedId(id);
@@ -84,8 +162,8 @@ export function JinjuMapSection() {
     setFilter(nextFilter);
     const nextActivity =
       nextFilter === "전체"
-        ? activities[0]
-        : activities.find((activity) => activity.category === nextFilter);
+        ? allActivities[0]
+        : allActivities.find((activity) => activity.category === nextFilter);
     if (nextActivity) {
       setSelectedId(nextActivity.id);
     }

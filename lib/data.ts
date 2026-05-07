@@ -3,13 +3,7 @@ import newsData from "@/data/news.json";
 import policiesData from "@/data/policies.json";
 import { withBasePath } from "@/lib/paths";
 
-export type ActivityCategory =
-  | "현장방문"
-  | "민원"
-  | "정책"
-  | "예산"
-  | "입법"
-  | "일정";
+export type ActivityCategory = "현장방문" | "민원" | "정책" | "예산" | "입법" | "일정";
 
 export type SourceType = "official" | "press";
 
@@ -87,12 +81,4 @@ export const districts = [
   "초장동"
 ];
 
-export const activityFilters = [
-  "전체",
-  "현장방문",
-  "민원",
-  "정책",
-  "예산",
-  "입법",
-  "일정"
-] as const;
+export const activityFilters = ["전체", "현장방문", "민원", "정책", "예산", "입법", "일정"] as const;

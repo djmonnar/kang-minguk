@@ -15,10 +15,13 @@ import {
 import { onAuthStateChanged, signInWithPopup, type User } from "firebase/auth";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { AdminMapPicker } from "@/components/AdminMapPicker";
 import { isAdminEmail } from "@/lib/admin";
 import { getFirebaseAuth, getFirebaseDb, getFirebaseStorage, googleProvider } from "@/lib/firebase";
+import { JINJU_CENTER } from "@/lib/naverMap";
+import { activityFilters, districts, type ActivityCategory, type SourceType } from "@/lib/data";
 
-type ActiveTab = "overview" | "members" | "proposals" | "albums" | "notices";
+type ActiveTab = "overview" | "members" | "proposals" | "map" | "albums" | "notices";
 
 type TimestampLike = {
   seconds: number;
@@ -69,15 +72,35 @@ type NoticeItem = {
   createdAt?: TimestampLike;
 };
 
+type MapActivityItem = {
+  id: string;
+  title: string;
+  category: ActivityCategory;
+  district: string;
+  date: string;
+  summary: string;
+  image?: string;
+  lat: number;
+  lng: number;
+  sourceUrl: string;
+  sourceName: string;
+  sourceType: SourceType;
+  status: string;
+  published: boolean;
+  createdAt?: TimestampLike;
+};
+
 const tabs: { id: ActiveTab; label: string }[] = [
   { id: "overview", label: "대시보드" },
   { id: "members", label: "회원 목록" },
   { id: "proposals", label: "민원 게시판" },
+  { id: "map", label: "지도 핀 관리" },
   { id: "albums", label: "앨범 관리" },
   { id: "notices", label: "공지 작성" }
 ];
 
 const proposalStatuses = ["접수", "확인중", "처리완료", "보류"];
+const mapCategories = activityFilters.filter((item): item is ActivityCategory => item !== "전체");
 
 function formatDate(value?: TimestampLike) {
   if (!value?.seconds) {
@@ -119,9 +142,24 @@ export function AdminDashboard() {
   const [hasAnnouncedAccess, setHasAnnouncedAccess] = useState(false);
   const [members, setMembers] = useState<MemberItem[]>([]);
   const [proposals, setProposals] = useState<ProposalItem[]>([]);
+  const [mapActivities, setMapActivities] = useState<MapActivityItem[]>([]);
   const [albums, setAlbums] = useState<AlbumItem[]>([]);
   const [notices, setNotices] = useState<NoticeItem[]>([]);
   const [albumFile, setAlbumFile] = useState<File | null>(null);
+  const [mapForm, setMapForm] = useState({
+    title: "",
+    category: "현장방문" as ActivityCategory,
+    district: "중앙동",
+    date: new Date().toISOString().slice(0, 10),
+    summary: "",
+    sourceUrl: "",
+    sourceName: "관련 기사",
+    sourceType: "press" as SourceType,
+    status: "등록",
+    published: true,
+    lat: JINJU_CENTER.lat,
+    lng: JINJU_CENTER.lng
+  });
   const [albumForm, setAlbumForm] = useState({
     title: "",
     caption: "",
@@ -159,6 +197,18 @@ export function AdminDashboard() {
     setProposals(nextItems);
   }
 
+  async function loadMapActivities() {
+    const db = getFirebaseDb();
+    const snapshot = await getDocs(query(collection(db, "mapActivities"), limit(100)));
+    const nextMapActivities = snapshot.docs.map((item) => ({
+      id: item.id,
+      ...(item.data() as Omit<MapActivityItem, "id">)
+    }));
+
+    nextMapActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    setMapActivities(nextMapActivities);
+  }
+
   async function loadAlbums() {
     const db = getFirebaseDb();
     const snapshot = await getDocs(query(collection(db, "albumPosts"), limit(100)));
@@ -184,7 +234,7 @@ export function AdminDashboard() {
   }
 
   async function loadAdminData() {
-    const results = await Promise.allSettled([loadMembers(), loadProposals(), loadAlbums(), loadNotices()]);
+    const results = await Promise.allSettled([loadMembers(), loadProposals(), loadMapActivities(), loadAlbums(), loadNotices()]);
     const rejected = results.find((result) => result.status === "rejected");
 
     if (rejected && rejected.status === "rejected") {
@@ -257,6 +307,101 @@ export function AdminDashboard() {
       setMessage(getAdminErrorMessage(error));
     } finally {
       setLoading(false);
+    }
+  }
+
+  function updateMapForm(name: string, value: string | boolean | number) {
+    setMapForm((current) => ({ ...current, [name]: value }));
+  }
+
+  async function handleMapSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!isAdmin) {
+      setMessage("관리자 인증 후 지도 핀을 등록할 수 있습니다.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setMessage("");
+      const db = getFirebaseDb();
+
+      await addDoc(collection(db, "mapActivities"), {
+        title: mapForm.title.trim(),
+        category: mapForm.category,
+        district: mapForm.district,
+        date: mapForm.date,
+        summary: mapForm.summary.trim(),
+        image: "/images/field.png",
+        lat: Number(mapForm.lat),
+        lng: Number(mapForm.lng),
+        sourceUrl: mapForm.sourceUrl.trim(),
+        sourceName: mapForm.sourceName.trim() || "관련 기사",
+        sourceType: mapForm.sourceType,
+        status: mapForm.status.trim() || "등록",
+        published: mapForm.published,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      setMapForm({
+        title: "",
+        category: "현장방문",
+        district: "중앙동",
+        date: new Date().toISOString().slice(0, 10),
+        summary: "",
+        sourceUrl: "",
+        sourceName: "관련 기사",
+        sourceType: "press",
+        status: "등록",
+        published: true,
+        lat: JINJU_CENTER.lat,
+        lng: JINJU_CENTER.lng
+      });
+      setMessage("지도 핀이 등록되었습니다.");
+      await loadMapActivities();
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleMapActivityUpdate(
+    item: MapActivityItem,
+    field: "title" | "category" | "district" | "date" | "summary" | "sourceUrl" | "sourceName" | "sourceType" | "status" | "published",
+    value: string | boolean
+  ) {
+    if (!isAdmin) {
+      return;
+    }
+
+    try {
+      const db = getFirebaseDb();
+      await updateDoc(doc(db, "mapActivities", item.id), {
+        [field]: value,
+        updatedAt: serverTimestamp()
+      });
+      await loadMapActivities();
+      setMessage("지도 핀 정보가 수정되었습니다.");
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
+    }
+  }
+
+  async function handleMapActivityDelete(item: MapActivityItem) {
+    if (!isAdmin || !window.confirm("이 지도 핀을 삭제할까요?")) {
+      return;
+    }
+
+    try {
+      const db = getFirebaseDb();
+      await deleteDoc(doc(db, "mapActivities", item.id));
+      await loadMapActivities();
+      setMessage("지도 핀이 삭제되었습니다.");
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
     }
   }
 
@@ -499,7 +644,7 @@ export function AdminDashboard() {
             ) : null}
 
             {isAdmin && activeTab === "overview" ? (
-              <section className="grid gap-4 md:grid-cols-3">
+              <section className="grid gap-4 md:grid-cols-4">
                 <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-civic">
                   <p className="text-sm font-black text-civic-red">회원</p>
                   <strong className="mt-2 block text-3xl font-black text-navy-900">{members.length}</strong>
@@ -509,6 +654,11 @@ export function AdminDashboard() {
                   <p className="text-sm font-black text-civic-red">민원</p>
                   <strong className="mt-2 block text-3xl font-black text-navy-900">{proposals.length}</strong>
                   <p className="mt-2 text-sm font-bold text-slate-600">접수된 민원/제안</p>
+                </article>
+                <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-civic">
+                  <p className="text-sm font-black text-civic-red">지도</p>
+                  <strong className="mt-2 block text-3xl font-black text-navy-900">{mapActivities.length}</strong>
+                  <p className="mt-2 text-sm font-bold text-slate-600">관리자 등록 핀</p>
                 </article>
                 <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-civic">
                   <p className="text-sm font-black text-civic-red">앨범</p>
@@ -590,6 +740,244 @@ export function AdminDashboard() {
                   ))}
                   {!proposals.length ? (
                     <p className="rounded-2xl bg-slate-50 p-4 text-sm font-bold text-slate-600">접수된 민원/제안이 없습니다.</p>
+                  ) : null}
+                </div>
+              </section>
+            ) : null}
+
+            {isAdmin && activeTab === "map" ? (
+              <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+                <form onSubmit={handleMapSubmit} className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-civic">
+                  <div>
+                    <p className="text-sm font-black text-civic-red">Map Pin</p>
+                    <h3 className="mt-2 text-2xl font-black text-navy-900">지도 핀 등록</h3>
+                    <p className="mt-2 text-sm font-bold leading-6 text-slate-600">
+                      지도를 클릭해 위치를 정하고, 태그와 내용을 입력하면 소통지도에 공개됩니다.
+                    </p>
+                  </div>
+
+                  <AdminMapPicker
+                    lat={mapForm.lat}
+                    lng={mapForm.lng}
+                    onChange={(position) => {
+                      updateMapForm("lat", Number(position.lat.toFixed(6)));
+                      updateMapForm("lng", Number(position.lng.toFixed(6)));
+                    }}
+                  />
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      위도
+                      <input
+                        required
+                        type="number"
+                        step="0.000001"
+                        value={mapForm.lat}
+                        onChange={(event) => updateMapForm("lat", Number(event.target.value))}
+                        className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                      />
+                    </label>
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      경도
+                      <input
+                        required
+                        type="number"
+                        step="0.000001"
+                        value={mapForm.lng}
+                        onChange={(event) => updateMapForm("lng", Number(event.target.value))}
+                        className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                      />
+                    </label>
+                  </div>
+
+                  <label className="grid gap-2 text-sm font-black text-navy-900">
+                    제목
+                    <input
+                      required
+                      value={mapForm.title}
+                      onChange={(event) => updateMapForm("title", event.target.value)}
+                      className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                    />
+                  </label>
+
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      태그
+                      <select
+                        value={mapForm.category}
+                        onChange={(event) => updateMapForm("category", event.target.value as ActivityCategory)}
+                        className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                      >
+                        {mapCategories.map((category) => (
+                          <option key={category} value={category}>{category}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      지역
+                      <select
+                        value={mapForm.district}
+                        onChange={(event) => updateMapForm("district", event.target.value)}
+                        className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                      >
+                        {districts.map((district) => (
+                          <option key={district} value={district}>{district}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      일자
+                      <input
+                        required
+                        type="date"
+                        value={mapForm.date}
+                        onChange={(event) => updateMapForm("date", event.target.value)}
+                        className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                      />
+                    </label>
+                  </div>
+
+                  <label className="grid gap-2 text-sm font-black text-navy-900">
+                    내용
+                    <textarea
+                      required
+                      rows={5}
+                      value={mapForm.summary}
+                      onChange={(event) => updateMapForm("summary", event.target.value)}
+                      className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold leading-6 outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                    />
+                  </label>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      관련 기사 링크
+                      <input
+                        required
+                        type="url"
+                        value={mapForm.sourceUrl}
+                        onChange={(event) => updateMapForm("sourceUrl", event.target.value)}
+                        className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                        placeholder="https://..."
+                      />
+                    </label>
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      출처명
+                      <input
+                        required
+                        value={mapForm.sourceName}
+                        onChange={(event) => updateMapForm("sourceName", event.target.value)}
+                        className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      상태
+                      <input
+                        required
+                        value={mapForm.status}
+                        onChange={(event) => updateMapForm("status", event.target.value)}
+                        className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                      />
+                    </label>
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      자료 유형
+                      <select
+                        value={mapForm.sourceType}
+                        onChange={(event) => updateMapForm("sourceType", event.target.value as SourceType)}
+                        className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20"
+                      >
+                        <option value="press">언론 기사</option>
+                        <option value="official">공식 자료</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <label className="flex items-center gap-3 text-sm font-bold text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={mapForm.published}
+                      onChange={(event) => updateMapForm("published", event.target.checked)}
+                      className="h-4 w-4 rounded border-slate-300 text-civic-red"
+                    />
+                    공개 상태로 등록
+                  </label>
+
+                  <button type="submit" disabled={loading} className="min-h-12 rounded-full bg-civic-red px-5 text-sm font-black text-white transition hover:bg-red-700 disabled:bg-slate-400">
+                    지도 핀 등록
+                  </button>
+                </form>
+
+                <div className="grid gap-4">
+                  <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-civic sm:flex-row sm:items-center sm:justify-between">
+                    <h3 className="text-xl font-black text-navy-900">등록된 지도 핀</h3>
+                    <button type="button" onClick={() => loadMapActivities().catch((error) => setMessage(getAdminErrorMessage(error)))} className="min-h-10 rounded-full border border-navy-900 px-4 text-xs font-black text-navy-900">
+                      새로고침
+                    </button>
+                  </div>
+                  {mapActivities.map((item) => (
+                    <article key={item.id} className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-civic">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-black text-civic-red">{item.category}</span>
+                        <span className="rounded-full bg-navy-50 px-3 py-1 text-xs font-black text-navy-900">{item.district}</span>
+                        <span className="text-xs font-bold text-slate-500">{item.date}</span>
+                      </div>
+                      <input
+                        defaultValue={item.title}
+                        onBlur={(event) => {
+                          if (event.target.value !== item.title) {
+                            handleMapActivityUpdate(item, "title", event.target.value);
+                          }
+                        }}
+                        className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-black text-navy-900 outline-none focus:border-civic-blue"
+                      />
+                      <textarea
+                        rows={3}
+                        defaultValue={item.summary}
+                        onBlur={(event) => {
+                          if (event.target.value !== item.summary) {
+                            handleMapActivityUpdate(item, "summary", event.target.value);
+                          }
+                        }}
+                        className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold leading-6 text-slate-700 outline-none focus:border-civic-blue"
+                      />
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <input
+                          defaultValue={item.sourceUrl}
+                          onBlur={(event) => {
+                            if (event.target.value !== item.sourceUrl) {
+                              handleMapActivityUpdate(item, "sourceUrl", event.target.value);
+                            }
+                          }}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700 outline-none focus:border-civic-blue"
+                        />
+                        <input
+                          defaultValue={item.status}
+                          onBlur={(event) => {
+                            if (event.target.value !== item.status) {
+                              handleMapActivityUpdate(item, "status", event.target.value);
+                            }
+                          }}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700 outline-none focus:border-civic-blue"
+                        />
+                      </div>
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                          <input type="checkbox" checked={item.published} onChange={(event) => handleMapActivityUpdate(item, "published", event.target.checked)} />
+                          공개
+                        </label>
+                        <a href={item.sourceUrl} target="_blank" rel="noreferrer" className="text-xs font-black text-navy-900 underline underline-offset-4">
+                          링크 확인
+                        </a>
+                        <button type="button" onClick={() => handleMapActivityDelete(item)} className="min-h-10 rounded-full border border-civic-red px-4 text-xs font-black text-civic-red">
+                          삭제
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                  {!mapActivities.length ? (
+                    <p className="rounded-2xl bg-white p-5 text-sm font-bold text-slate-600 shadow-civic">등록된 지도 핀이 없습니다.</p>
                   ) : null}
                 </div>
               </section>
