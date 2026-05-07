@@ -16,7 +16,7 @@ service cloud.firestore {
           exists(/databases/$(database)/documents/admins/$(request.auth.uid))
           || (
             request.auth.token.email_verified == true
-            && request.auth.token.email in ["rso10041@gmail.com"]
+            && request.auth.token.email in ["rso10041@gmail.com", "djmonnar4@gmail.com"]
           )
         );
     }
