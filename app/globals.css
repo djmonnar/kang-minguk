@@ -35,9 +35,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
+  }
+}
+
 body.mobile-menu-open {
   overflow: hidden;
   touch-action: none;
+}
+
+body.mobile-menu-open [aria-label="모바일 하단 메뉴"] {
+  display: none;
 }
 
 body.mobile-menu-open [aria-label="모바일 빠른 메뉴"] {

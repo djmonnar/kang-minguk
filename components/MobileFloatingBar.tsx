@@ -1,99 +1,140 @@
 "use client";
 
 import Link from "next/link";
-import { onAuthStateChanged } from "firebase/auth";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { isAdminEmail } from "@/lib/admin";
-import { getFirebaseAuth } from "@/lib/firebase";
 
-function copyCurrentUrl() {
-  if (navigator.clipboard?.writeText) {
-    return navigator.clipboard.writeText(window.location.href);
+type IconName = "profile" | "policy" | "home" | "proposal" | "map";
+
+type TabItem = {
+  label: string;
+  href: string;
+  icon: IconName;
+  match: (pathname: string, hash: string) => boolean;
+};
+
+const tabs: TabItem[] = [
+  { label: "소개", href: "/profile", icon: "profile", match: (pathname) => pathname === "/profile" },
+  { label: "정책", href: "/policies", icon: "policy", match: (pathname) => pathname === "/policies" },
+  { label: "홈", href: "/", icon: "home", match: (pathname, hash) => pathname === "/" && hash !== "#jinju-map" },
+  { label: "민원", href: "/participation", icon: "proposal", match: (pathname) => pathname === "/participation" },
+  { label: "지도", href: "/#jinju-map", icon: "map", match: (pathname, hash) => pathname === "/" && hash === "#jinju-map" }
+];
+
+function TabIcon({ name }: { name: IconName }) {
+  if (name === "profile") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-6 w-6">
+        <path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Z" fill="none" stroke="currentColor" strokeWidth="2.2" />
+        <path d="M4.4 21c.8-4 3.4-6.1 7.6-6.1s6.8 2.1 7.6 6.1" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2.2" />
+      </svg>
+    );
   }
 
-  const textarea = document.createElement("textarea");
-  textarea.value = window.location.href;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "fixed";
-  textarea.style.opacity = "0";
-  document.body.appendChild(textarea);
-  textarea.select();
-  document.execCommand("copy");
-  document.body.removeChild(textarea);
-  return Promise.resolve();
+  if (name === "policy") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-6 w-6">
+        <path d="M5.5 5.5h9.2M5.5 11.5h7.4M5.5 17.5h5.2" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2.2" />
+        <path d="m15.2 16.3 2 2 3.7-4.2" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4" />
+      </svg>
+    );
+  }
+
+  if (name === "home") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-7 w-7">
+        <path d="M3.7 11.1 12 4l8.3 7.1" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4" />
+        <path d="M6.4 10.3v9.1h4.1v-5.2h3v5.2h4.1v-9.1" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  if (name === "proposal") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-6 w-6">
+        <path d="M5 5.4h14v10.2H9.2L5 19.4v-14Z" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="2.2" />
+        <path d="M8.4 9.2h7.2M8.4 12.5h4.7" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2.1" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-6 w-6">
+      <path d="M12 21s6.4-5.2 6.4-11.2A6.4 6.4 0 0 0 5.6 9.8C5.6 15.8 12 21 12 21Z" fill="none" stroke="currentColor" strokeWidth="2.2" />
+      <path d="M12 12.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z" fill="currentColor" />
+    </svg>
+  );
 }
 
 export function MobileFloatingBar() {
-  const [showAdminLink, setShowAdminLink] = useState(false);
+  const pathname = usePathname();
+  const [hash, setHash] = useState("");
 
   useEffect(() => {
-    const auth = getFirebaseAuth();
-    return onAuthStateChanged(auth, (user) => {
-      setShowAdminLink(isAdminEmail(user?.email));
-    });
+    function syncHash() {
+      setHash(window.location.hash);
+    }
+
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    window.addEventListener("popstate", syncHash);
+
+    return () => {
+      window.removeEventListener("hashchange", syncHash);
+      window.removeEventListener("popstate", syncHash);
+    };
   }, []);
 
-  async function handleShare() {
-    const shareData = {
-      title: "국회의원 강민국 공식 의정활동 홈페이지",
-      text: "진주의 현장에서 듣고, 국회에서 답하는 의정활동 홈페이지입니다.",
-      url: window.location.href
-    };
+  function handleClick(item: TabItem) {
+    if (item.href === "/") {
+      setHash("");
+      window.setTimeout(() => setHash(window.location.hash), 0);
+    }
 
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-        return;
-      }
-
-      await copyCurrentUrl();
-    } catch {
-      await copyCurrentUrl();
+    if (item.href === "/#jinju-map") {
+      setHash("#jinju-map");
+      window.setTimeout(() => setHash(window.location.hash), 0);
     }
   }
 
   return (
-    <div className="fixed inset-x-0 bottom-4 z-50 px-4 md:hidden" aria-label="모바일 빠른 메뉴">
-      <div className={["mx-auto grid max-w-md gap-2 rounded-full border border-white/70 bg-white/95 p-2 shadow-[0_18px_50px_rgba(0,27,68,0.22)] backdrop-blur-xl", showAdminLink ? "grid-cols-5" : "grid-cols-4"].join(" ")}>
-        <a
-          href="tel:027840797"
-          className="flex min-h-12 items-center justify-center rounded-full bg-navy-900 px-3 text-xs font-black text-white focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
-          aria-label="의원실 전화하기"
-        >
-          전화하기
-        </a>
-        <button
-          type="button"
-          onClick={handleShare}
-          className="min-h-12 rounded-full border border-slate-200 bg-white px-3 text-xs font-black text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
-          aria-label="현재 페이지 공유하기"
-        >
-          공유하기
-        </button>
-        <Link
-          href="/#jinju-map"
-          className="flex min-h-12 items-center justify-center rounded-full bg-civic-red px-3 text-xs font-black text-white focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
-          aria-label="진주 소통지도 보기"
-        >
-          소통지도
-        </Link>
-        <Link
-          href="/signup"
-          className="flex min-h-12 items-center justify-center rounded-full bg-navy-50 px-3 text-xs font-black text-navy-900 focus:outline-none focus:ring-2 focus:ring-civic-blue focus:ring-offset-2"
-          aria-label="소통회원 가입하기"
-        >
-          가입
-        </Link>
-        {showAdminLink ? (
-          <Link
-            href="/admin"
-            className="flex min-h-12 items-center justify-center rounded-full border border-civic-red bg-white px-3 text-xs font-black text-civic-red focus:outline-none focus:ring-2 focus:ring-civic-red focus:ring-offset-2"
-            aria-label="관리자 콘솔 열기"
-          >
-            AD
-          </Link>
-        ) : null}
+    <nav className="fixed inset-x-0 bottom-0 z-50 md:hidden" aria-label="모바일 하단 메뉴">
+      <div className="mx-auto max-w-md px-3 pb-[calc(env(safe-area-inset-bottom)+10px)]">
+        <div className="relative grid h-[74px] grid-cols-5 items-end rounded-t-[1.65rem] border border-white/10 bg-[#050b1d]/96 px-2 pb-2 pt-3 shadow-[0_-18px_46px_rgba(0,27,68,0.26)] backdrop-blur-xl">
+          {tabs.map((item) => {
+            const active = item.match(pathname, hash);
+            const isHome = item.icon === "home";
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => handleClick(item)}
+                aria-current={active ? "page" : undefined}
+                className={[
+                  "group relative flex min-w-0 flex-col items-center justify-end gap-1 rounded-2xl text-[11px] font-black transition duration-300 focus:outline-none focus:ring-2 focus:ring-white/50",
+                  isHome ? "-mt-9 pb-0" : "min-h-14 pb-1.5",
+                  active ? "text-white" : "text-white/48 hover:text-white/82"
+                ].join(" ")}
+              >
+                {isHome ? (
+                  <span
+                    className={[
+                      "grid h-[62px] w-[62px] place-items-center rounded-full border-[5px] border-[#050b1d] shadow-[0_16px_38px_rgba(38,103,255,0.34)] transition duration-300",
+                      active ? "bg-[#356fff] text-white" : "bg-[#1e4fbf] text-white/86 group-hover:bg-[#356fff]"
+                    ].join(" ")}
+                  >
+                    <TabIcon name={item.icon} />
+                  </span>
+                ) : (
+                  <TabIcon name={item.icon} />
+                )}
+                <span className={["truncate", active ? "text-[#7da2ff]" : ""].join(" ")}>{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </nav>
   );
 }
