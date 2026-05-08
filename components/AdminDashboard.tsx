@@ -21,7 +21,7 @@ import { isAdminEmail } from "@/lib/admin";
 import { signInWithGoogle } from "@/lib/authBrowser";
 import { getFirebaseAuth, getFirebaseDb, getFirebaseStorage, googleProvider } from "@/lib/firebase";
 import { JINJU_CENTER } from "@/lib/naverMap";
-import { activities, activityFilters, districts, type ActivityCategory, type SourceType } from "@/lib/data";
+import { activities, activityFilters, districts, news, type ActivityCategory, type SourceType } from "@/lib/data";
 
 type ActiveTab = "overview" | "members" | "proposals" | "map" | "albums" | "notices";
 
@@ -70,6 +70,9 @@ type NoticeItem = {
   category: string;
   summary: string;
   content: string;
+  url?: string;
+  sourceName?: string;
+  sourceType?: SourceType;
   published: boolean;
   createdAt?: TimestampLike;
 };
@@ -186,6 +189,9 @@ export function AdminDashboard() {
     category: "공지사항",
     summary: "",
     content: "",
+    url: "",
+    sourceName: "관련 자료",
+    sourceType: "press" as SourceType,
     published: true
   });
 
@@ -261,10 +267,22 @@ export function AdminDashboard() {
   async function loadNotices() {
     const db = getFirebaseDb();
     const snapshot = await getDocs(query(collection(db, "newsPosts"), limit(100)));
-    const nextNotices = snapshot.docs.map((item) => ({
-      id: item.id,
-      ...(item.data() as Omit<NoticeItem, "id">)
-    }));
+    const nextNotices = snapshot.docs.map((item) => {
+      const data = item.data() as Partial<NoticeItem>;
+
+      return {
+        id: item.id,
+        title: data.title || "",
+        category: data.category || "공지사항",
+        summary: data.summary || "",
+        content: data.content || "",
+        url: data.url || "",
+        sourceName: data.sourceName || "관련 자료",
+        sourceType: (data.sourceType === "official" ? "official" : "press") as SourceType,
+        published: data.published !== false,
+        createdAt: data.createdAt
+      };
+    });
 
     nextNotices.sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0));
     setNotices(nextNotices);
@@ -700,6 +718,9 @@ export function AdminDashboard() {
         category: newsForm.category,
         summary: newsForm.summary.trim(),
         content: newsForm.content.trim(),
+        url: newsForm.url.trim(),
+        sourceName: newsForm.sourceName.trim() || "관련 자료",
+        sourceType: newsForm.sourceType,
         published: newsForm.published,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
@@ -710,6 +731,9 @@ export function AdminDashboard() {
         category: "공지사항",
         summary: "",
         content: "",
+        url: "",
+        sourceName: "관련 자료",
+        sourceType: "press",
         published: true
       });
       setMessage("공지사항이 등록되었습니다.");
@@ -721,7 +745,49 @@ export function AdminDashboard() {
     }
   }
 
-  async function handleNoticeUpdate(item: NoticeItem, field: "title" | "category" | "summary" | "content" | "published", value: string | boolean) {
+  async function handleSeedNewsPosts() {
+    if (!isAdmin) {
+      setMessage("관리자 인증 후 기본 최근소식을 가져올 수 있습니다.");
+      return;
+    }
+
+    if (notices.length) {
+      setMessage("이미 등록된 공지사항이 있어 기본 최근소식 가져오기를 중단했습니다.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setMessage("");
+      const db = getFirebaseDb();
+
+      await Promise.all(
+        news.map((item) =>
+          addDoc(collection(db, "newsPosts"), {
+            title: item.title,
+            category: item.category,
+            summary: item.sourceName ? `${item.sourceName} 연결 자료` : "관련 기사 연결 자료",
+            content: item.title,
+            url: item.url || "",
+            sourceName: item.sourceName || "관련 기사",
+            sourceType: item.sourceType || "press",
+            published: true,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          })
+        )
+      );
+
+      setMessage("기본 최근소식을 공지사항 관리 데이터로 가져왔습니다.");
+      await loadNotices();
+    } catch (error) {
+      setMessage(getAdminErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleNoticeUpdate(item: NoticeItem, field: "title" | "category" | "summary" | "content" | "url" | "sourceName" | "sourceType" | "published", value: string | boolean) {
     if (!isAdmin) {
       return;
     }
@@ -1391,6 +1457,23 @@ export function AdminDashboard() {
                     내용
                     <textarea required rows={7} value={newsForm.content} onChange={(event) => setNewsForm((current) => ({ ...current, content: event.target.value }))} className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold leading-6 outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20" />
                   </label>
+                  <div className="grid gap-4 md:grid-cols-[1.5fr_1fr_140px]">
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      관련 링크
+                      <input type="url" value={newsForm.url} onChange={(event) => setNewsForm((current) => ({ ...current, url: event.target.value }))} placeholder="https://..." className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20" />
+                    </label>
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      출처명
+                      <input value={newsForm.sourceName} onChange={(event) => setNewsForm((current) => ({ ...current, sourceName: event.target.value }))} className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20" />
+                    </label>
+                    <label className="grid gap-2 text-sm font-black text-navy-900">
+                      자료 유형
+                      <select value={newsForm.sourceType} onChange={(event) => setNewsForm((current) => ({ ...current, sourceType: event.target.value as SourceType }))} className="min-h-12 rounded-xl border border-slate-200 px-4 text-sm font-bold outline-none focus:border-civic-blue focus:ring-2 focus:ring-civic-blue/20">
+                        <option value="press">언론 기사</option>
+                        <option value="official">공식자료</option>
+                      </select>
+                    </label>
+                  </div>
                   <label className="flex items-center gap-3 text-sm font-bold text-slate-700">
                     <input type="checkbox" checked={newsForm.published} onChange={(event) => setNewsForm((current) => ({ ...current, published: event.target.checked }))} className="h-4 w-4 rounded border-slate-300 text-civic-red" />
                     공개 상태로 등록
@@ -1452,11 +1535,47 @@ export function AdminDashboard() {
                         }}
                         className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold leading-6 text-slate-700 outline-none focus:border-civic-blue"
                       />
+                      <div className="grid gap-3 md:grid-cols-[1.5fr_1fr_140px]">
+                        <input
+                          type="url"
+                          defaultValue={item.url || ""}
+                          onBlur={(event) => {
+                            if (event.target.value !== (item.url || "")) {
+                              handleNoticeUpdate(item, "url", event.target.value);
+                            }
+                          }}
+                          placeholder="관련 링크"
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700 outline-none focus:border-civic-blue"
+                        />
+                        <input
+                          defaultValue={item.sourceName || ""}
+                          onBlur={(event) => {
+                            if (event.target.value !== (item.sourceName || "")) {
+                              handleNoticeUpdate(item, "sourceName", event.target.value);
+                            }
+                          }}
+                          placeholder="출처명"
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-700 outline-none focus:border-civic-blue"
+                        />
+                        <select
+                          defaultValue={item.sourceType || "press"}
+                          onChange={(event) => handleNoticeUpdate(item, "sourceType", event.target.value as SourceType)}
+                          className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm font-black text-navy-900 outline-none focus:border-civic-blue"
+                        >
+                          <option value="press">언론 기사</option>
+                          <option value="official">공식자료</option>
+                        </select>
+                      </div>
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
                           <input type="checkbox" checked={item.published} onChange={(event) => handleNoticeUpdate(item, "published", event.target.checked)} />
                           공개
                         </label>
+                        {item.url ? (
+                          <a href={item.url} target="_blank" rel="noreferrer" className="text-xs font-black text-navy-900 underline underline-offset-4">
+                            링크 확인
+                          </a>
+                        ) : null}
                         <span className="text-xs font-bold text-slate-500">{formatDate(item.createdAt)}</span>
                         <button type="button" onClick={() => handleNoticeDelete(item)} className="min-h-10 rounded-full border border-civic-red px-4 text-xs font-black text-civic-red">
                           삭제
@@ -1465,7 +1584,17 @@ export function AdminDashboard() {
                     </article>
                   ))}
                   {!notices.length ? (
-                    <p className="rounded-2xl bg-white p-5 text-sm font-bold text-slate-600 shadow-civic">등록된 공지사항이 없습니다.</p>
+                    <div className="rounded-2xl bg-white p-5 shadow-civic">
+                      <p className="text-sm font-bold leading-6 text-slate-600">등록된 공지사항이 없습니다. 현재 홈페이지에 보이는 기본 최근소식을 공지사항 관리 데이터로 가져오면 이 화면에서 수정하고 삭제할 수 있습니다.</p>
+                      <button
+                        type="button"
+                        onClick={handleSeedNewsPosts}
+                        disabled={loading}
+                        className="mt-4 min-h-11 rounded-full bg-navy-900 px-5 text-sm font-black text-white transition hover:bg-navy-800 disabled:bg-slate-400"
+                      >
+                        기본 최근소식 가져오기
+                      </button>
+                    </div>
                   ) : null}
                 </div>
               </section>

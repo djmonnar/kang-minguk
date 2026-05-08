@@ -91,6 +91,9 @@ service cloud.firestore {
           "category",
           "summary",
           "content",
+          "url",
+          "sourceName",
+          "sourceType",
           "published",
           "createdAt",
           "updatedAt"
@@ -99,6 +102,18 @@ service cloud.firestore {
         && request.resource.data.category is string
         && request.resource.data.summary is string
         && request.resource.data.content is string
+        && (
+          !request.resource.data.keys().hasAny(["url"])
+          || request.resource.data.url is string
+        )
+        && (
+          !request.resource.data.keys().hasAny(["sourceName"])
+          || request.resource.data.sourceName is string
+        )
+        && (
+          !request.resource.data.keys().hasAny(["sourceType"])
+          || request.resource.data.sourceType in ["official", "press"]
+        )
         && request.resource.data.published is bool;
       allow delete: if isAdmin();
     }
