@@ -34,7 +34,7 @@ export function Footer() {
               본 홈페이지는 의정활동 소개와 지역 소통을 위한 공식 안내 채널입니다.
             </p>
             <p className="mt-3 text-xs font-semibold text-slate-500">
-              Produced by <span className="font-black text-navy-900">Jitmarketing</span>
+              Produced by <span className="font-black text-navy-900">Jitmarketing</span> · 대표 서효승 · 010-9382-9110
             </p>
           </div>
 
