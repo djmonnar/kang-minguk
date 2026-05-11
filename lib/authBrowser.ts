@@ -10,8 +10,27 @@ export function isKakaoInAppBrowser() {
   return /KAKAOTALK/i.test(navigator.userAgent);
 }
 
+export function isIOS() {
+  if (typeof navigator === "undefined") return false;
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
+}
+
 export function getKakaoLoginGuideMessage() {
-  return "카카오톡 안에서 열린 브라우저에서는 Google 로그인이 제한될 수 있습니다. 오른쪽 위 메뉴에서 '다른 브라우저로 열기'를 선택한 뒤 다시 로그인해주세요.";
+  return "카카오톡 안에서 열린 브라우저에서는 Google 로그인이 제한됩니다. 아래 버튼을 눌러 외부 브라우저에서 열어주세요.";
+}
+
+export function openInExternalBrowser() {
+  if (typeof window === "undefined") return;
+
+  const url = window.location.href;
+
+  if (isIOS()) {
+    // iOS: 카카오톡 딥링크로 Safari에서 열기
+    window.location.href = `kakaotalk://web/openExternal?url=${encodeURIComponent(url)}`;
+  } else {
+    // Android: intent 스킴으로 Chrome에서 열기
+    window.location.href = `intent://${url.replace(/^https?:\/\//, "")}#Intent;scheme=https;package=com.android.chrome;end`;
+  }
 }
 
 export function getAuthErrorMessage(error: unknown) {
